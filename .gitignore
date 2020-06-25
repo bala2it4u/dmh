@@ -3,3 +3,13 @@
 ################################################################################
 
 /src/DMH.Net/LuckyHome/bin/Debug
+/src/DMH.Net/LuckyHome/obj/Debug
+/src/DMH.Net/LuckyHome.Common/bin/Debug
+/src/DMH.Net/LuckyHome.Common/obj/Debug
+/src/DMH.Net/packages
+/src/DMH.Net/Run.Me.Now/bin/Debug
+/src/DMH.Net/Run.Me.Now/obj/Debug
+/src/DMH.Net/LuckyHome.Common/obj/Release
+/src/DMH.Net/.vs/LuckyHome/v15
+/.vs
+/src/DMH.Net/LuckyHome/.vs/LuckyHome/v15/Server/sqlite3

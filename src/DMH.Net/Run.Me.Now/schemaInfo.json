@@ -1,0 +1,33 @@
+﻿{
+  "MethodToRun": "About",
+  "NameSpaceAndClass": "WebApplication1.Controllers.HomeController",
+  "MethodType": 1,
+  "ClassType": 1,
+  "AssambleName": "WebApplication1",
+  "StartAppProject": [ "WebApplication1" ],
+
+  "DepandancyClasses": [
+    {
+      "NameSpaceAndInterfaceName": "WebApplication1.Controllers.IInterface",
+      "NameSpaceAndMappedClassName": "WebApplication1.Controllers.Interface",
+      "AssambleName": "WebApplication1"
+    },
+    {
+      "NameSpaceAndInterfaceName": "WebApplication1.Controllers.Main.IInterface1",
+      "NameSpaceAndMappedClassName": "WebApplication1.Controllers.Service.Interface",
+      "AssambleName": "WebApplication1"
+    }
+  ],
+  "InputValues": [
+    {
+      "InputName": "data",
+      "InputType": "string",
+      "DefaultValue": "Schema data"
+    },
+    {
+      "InputName": "dataAbout",
+      "InputType": "string",
+      "DefaultValue": "about"
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+﻿<UserControl x:Class="LuckyHome.InterfaceMapperWithClassControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0"
+             Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}"
+             Foreground="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"
+             mc:Ignorable="d"
+             Name="MyToolWindow" MinHeight="203" MinWidth="338" d:DesignWidth="490.5" d:DesignHeight="281.75">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" MinHeight="60"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="Auto" MinHeight="104"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <Label Content="Interface Name" Grid.Column="0" Margin="0,18"/>
+        <TextBox x:Name="lblInterfaceName" VerticalContentAlignment="Bottom" Grid.Column="1" IsReadOnly="True" Text="Interface Name" Margin="5,5,1,5"/>
+        <Label Content="Class end like" Grid.Column="0" Grid.Row="1" Margin="5"/>
+        <StackPanel Grid.Column="1" Margin="5" Orientation="Horizontal" Grid.Row="1">
+            <TextBox x:Name="lblClassName" VerticalContentAlignment="Bottom" IsReadOnly="True" Text="Class Name" Height="29" Width="331"/>
+            <Button Content="Find" x:Name="btnFind" HorizontalAlignment="Right"  Margin="5,6,5,5" VerticalAlignment="Center" Width="38" Click="BtnFind_Click" />
+        </StackPanel>
+        <Label Content="Project Name" Grid.Column="0" Grid.Row="2" Margin="5"/>
+        <StackPanel Grid.Column="1" Margin="5" Orientation="Vertical" Grid.Row="2">
+            <ComboBox x:Name="cboProjectName" SelectionChanged="CboProjectName_SelectionChanged" Height="25"/>
+        </StackPanel>
+        <Label Content="Class Name" Grid.Column="0" Grid.Row="3" Margin="5,6" />
+        <StackPanel Grid.Column="1" Margin="5" Orientation="Horizontal" HorizontalAlignment="Stretch" Grid.Row="3">
+            <ComboBox x:Name="cboClassName" Height="25" Width="320"/>
+            <Button Content="Refresh" x:Name="btnReload" HorizontalAlignment="Right" VerticalAlignment="Center" Width="46" Click="BtnFind_Click" />
+        </StackPanel>
+        <StackPanel Grid.Column="1" Margin="0,0,10,10" Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right" Grid.Row="5" Height="30" Width="340">
+            <Button Content="Cancel" x:Name="btnCancel" HorizontalAlignment="Right"  Margin="5" VerticalAlignment="Bottom" Width="75" Click="BtnCancel_Click" />
+            <Button Content="Use last run" x:Name="btnUselastrun" HorizontalAlignment="Right" Margin="5" VerticalAlignment="Bottom" Width="75" Click="btnLastRun_Click"/>
+            <Button Content="Use Default" x:Name="btnUseDefault" HorizontalAlignment="Right" Margin="5" VerticalAlignment="Bottom" Width="75" Click="BtnUseDefault_Click"/>
+            <Button Content="Next" x:Name="btnNext" HorizontalAlignment="Right"  Margin="5" VerticalAlignment="Bottom" Width="75" Click="BtnNext_Click" />
+        </StackPanel>
+    </Grid>
+</UserControl>
