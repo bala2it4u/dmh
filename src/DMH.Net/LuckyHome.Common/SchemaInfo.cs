@@ -7,6 +7,8 @@ namespace LuckyHome.Common
 {
     public class SchemaInfo
     {
+        static Func<string, string, string> aggregate = (x, y) => $"{x} + {y}";
+
         public string NameSpaceAndClass
         {
             get;
@@ -68,7 +70,9 @@ namespace LuckyHome.Common
 
         public string GetMethodBasedUniqueName()
         {
-            string temp = AssambleName + NameSpaceAndClass + MethodToRun + MethodParameters.Aggregate((string x, string y) => x + "+" + y) + ".json";
+            var tempParams = MethodParameters.Any() ? MethodParameters.Aggregate(aggregate) : "";
+
+            string temp = $"{AssambleName}={NameSpaceAndClass}={MethodToRun}={tempParams}.json";
             char[] invalidFileNameChars = Path.GetInvalidFileNameChars();
             foreach (char item in invalidFileNameChars)
             {
