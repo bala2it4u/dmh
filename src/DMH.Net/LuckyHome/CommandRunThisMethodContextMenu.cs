@@ -227,10 +227,10 @@ namespace LuckyHome
             schemaInfo.InputValues = inputValues.ToArray();
             schemaInfoCommon.SetFileData(Json.Encode(schemaInfoCommon.SchemaInfo));
             string str = Path.Combine(Path.GetDirectoryName(project.FullName), project.ConfigurationManager.ActiveConfiguration.Properties.Item("OutputPath").Value.ToString());
-            string text = str + ".LuckyHome\\";
-            if (!Directory.Exists(text))
+            string tempPath = Path.GetTempPath() + Path.GetFileNameWithoutExtension(project.FullName) + "\\.LuckyHome\\";
+            if (!Directory.Exists(tempPath))
             {
-                Directory.CreateDirectory(text);
+                Directory.CreateDirectory(tempPath);
             }
             string methodBasedUniqueName = schemaInfo.GetMethodBasedUniqueName();
             File.Copy("Run.Me.Now.exe", str + "Run.Me.Now.exe", overwrite: true);
@@ -252,7 +252,7 @@ namespace LuckyHome
             System.Diagnostics.Process process = System.Diagnostics.Process.Start(fileName);
             Attach(dte, process.Id);
             File.WriteAllText(str + "schemainfo.json", Json.Encode(schemaInfo));
-            File.WriteAllText(text + methodBasedUniqueName, Json.Encode(schemaInfo));
+            File.WriteAllText(tempPath + methodBasedUniqueName, Json.Encode(schemaInfo));
         }
 
         public static void Attach(DTE dte, int processid)

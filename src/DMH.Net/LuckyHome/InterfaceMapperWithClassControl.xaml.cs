@@ -159,11 +159,11 @@
             }
         }
 
-        private async void btnLastRun_Click(object sender, RoutedEventArgs e)
+        private void btnLastRun_Click(object sender, RoutedEventArgs e)
         {
         }
 
-        private async void BtnUseDefault_Click(object sender, RoutedEventArgs e)
+        private void BtnUseDefault_Click(object sender, RoutedEventArgs e)
         {
             if (input == null || !input.ClassInfos.Any())
             {

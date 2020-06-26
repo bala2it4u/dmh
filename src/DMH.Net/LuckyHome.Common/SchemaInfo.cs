@@ -7,7 +7,8 @@ namespace LuckyHome.Common
 {
     public class SchemaInfo
     {
-        static Func<string, string, string> aggregate = (x, y) => $"{x} + {y}";
+        static Func<string, string, string> aggregate = (x, y) => $"{x}={y}";
+        static int maxFileLength = 255 - 100;
 
         public string NameSpaceAndClass
         {
@@ -72,11 +73,15 @@ namespace LuckyHome.Common
         {
             var tempParams = MethodParameters.Any() ? MethodParameters.Aggregate(aggregate) : "";
 
-            string temp = $"{AssambleName}={NameSpaceAndClass}={MethodToRun}={tempParams}.json";
+            string temp = $"{NameSpaceAndClass}={MethodToRun}={tempParams}.json";
             char[] invalidFileNameChars = Path.GetInvalidFileNameChars();
             foreach (char item in invalidFileNameChars)
             {
-                temp = temp.Replace(item, '-');
+                temp = temp.Replace(item.ToString(), "");
+            }
+            if (temp.Length > maxFileLength)
+            {
+                return temp.Substring(temp.Length - maxFileLength).Trim();
             }
             return temp;
         }

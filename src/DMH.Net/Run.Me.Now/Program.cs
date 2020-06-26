@@ -27,7 +27,7 @@ namespace Run.Me.Now
             }
         }
 
-        static Func<string, string, string> aggregate = (x, y) => $"{x} + {y}";
+        static Func<string, string, string> aggregate = (x, y) => $"{x}={y}";
 
         private static Type[] userInputType = new Type[6]
         {
@@ -131,24 +131,31 @@ namespace Run.Me.Now
                 if (paremType.IsInterface)
                 {
                     string tempTypeName = commonTypeName(paremType);
-                    ClassInfo matchClass2 = MainSchemaInfo.DepandancyClasses.FirstOrDefault((ClassInfo x) => x.NameSpaceAndInterfaceName == tempTypeName);
-                    paremType = Assembly.Load(matchClass2.AssambleName).GetType(matchClass2?.NameSpaceAndMappedClassName ?? "");
+                    ClassInfo matchClass = MainSchemaInfo.DepandancyClasses.FirstOrDefault((ClassInfo x) => x.NameSpaceAndInterfaceName == tempTypeName);
+                    paremType = Assembly.Load(matchClass.AssambleName).GetType(matchClass?.NameSpaceAndMappedClassName ?? "");
                 }
                 if (paremType == null)
                 {
                     createdInstance.Add(null);
+                    continue;
                 }
                 if (!paremType.IsClass)
                 {
-                    createdInstance.Add("");
+                    createdInstance.Add(null);
                 }
                 else if (paremType.FullName.StartsWith("System.Lazy"))
                 {
                     Type tempType = paremType.GetGenericArguments()[0];
                     if (tempType.IsInterface)
                     {
-                        ClassInfo matchClass = MainSchemaInfo.DepandancyClasses.FirstOrDefault((ClassInfo x) => x.NameSpaceAndInterfaceName == tempType.FullName);
-                        tempType = Assembly.Load(matchClass.AssambleName).GetType(matchClass.NameSpaceAndMappedClassName);
+                        string tempTypeName = commonTypeName(tempType);
+                        ClassInfo matchClass = MainSchemaInfo.DepandancyClasses.FirstOrDefault((ClassInfo x) => x.NameSpaceAndInterfaceName == tempTypeName);
+                        tempType = Assembly.Load(matchClass.AssambleName).GetType(matchClass?.NameSpaceAndMappedClassName ?? "");
+                    }
+                    if (tempType == null)
+                    {
+                        createdInstance.Add(null);
+                        continue;
                     }
                     ConstructorInfo[] paremTypeConstructors2 = tempType.GetConstructors();
                     ParameterInfo[] paremTypeParemType2 = (paremTypeConstructors2.Length != 0) ? paremTypeConstructors2[0].GetParameters() : new ParameterInfo[0];
@@ -172,7 +179,23 @@ namespace Run.Me.Now
             }
             return createdInstance.ToArray();
         }
-
+        static Type GetType(Assembly assembly, string typeName, string interfaceParam)
+        {
+            Type type = assembly.GetType(typeName);
+            if (type == null)
+            {
+                int index = typeName.IndexOf("`");
+                if (index != -1)
+                {
+                    index += 2;
+                    //var span = typeName.ToList();
+                    type = Type.GetType(typeName.Remove(index));
+                    var paremTypes = new List<Type>();
+                    return type.MakeGenericType(paremTypes.ToArray());
+                }
+            }
+            return type;
+        }
         private static object getEnumValue(ParameterInfo item)
         {
             InputValue findData = MainSchemaInfo.InputValues.FirstOrDefault((InputValue x) => x.InputName == item.Name);
