@@ -150,6 +150,12 @@ namespace Run.Me.Now
                     {
                         string tempTypeName = commonTypeName(tempType);
                         ClassInfo matchClass = MainSchemaInfo.DepandancyClasses.FirstOrDefault((ClassInfo x) => x.NameSpaceAndInterfaceName == tempTypeName);
+
+                        if (matchClass == null || string.IsNullOrWhiteSpace(matchClass.NameSpaceAndMappedClassName))
+                        {
+                            createdInstance.Add(null);
+                            continue;
+                        }
                         tempType = Assembly.Load(matchClass.AssambleName).GetType(matchClass?.NameSpaceAndMappedClassName ?? "");
                     }
                     if (tempType == null)

@@ -36,18 +36,6 @@
             internal set;
         }
 
-        public string[] ClassNames
-        {
-            get;
-            set;
-        }
-
-        public string ClassNameSelected
-        {
-            get;
-            set;
-        }
-
         public Action<CodeClass[]> CallbackOption
         {
             get;
@@ -71,7 +59,15 @@
             get;
             internal set;
         }
-    }
+
+        public bool LastRunFound { get; internal set; }
+
+        public Action CallbackLastRunOption
+        {
+            get;
+            internal set;
+        }
+}
 
     /// <summary>
     /// Interaction logic for InterfaceMapperWithClassControl.
@@ -98,6 +94,7 @@
             cboProjectName.ItemsSource = input.ProjectNames.ConvertAll((Project x) => x.Name);
             SchemaInfo schemaInfo = input.SchemaInfoCommon.SchemaInfo;
             loadScreenData(schemaInfo);
+            btnUselastrun.IsEnabled = input.LastRunFound;
             if (UseDefault && cboClassName.SelectedIndex != 0)
             {
                 BtnUseDefault_Click(btnUseDefault, null);
@@ -118,7 +115,7 @@
                 });
                 output.Add(item);
                 SchemaInfo schemaInfo = input.SchemaInfoCommon.SchemaInfo;
-                ClassInfo classInfo = schemaInfo.DepandancyClasses.FirstOrDefault((ClassInfo x) => x.NameSpaceAndInterfaceName == lblInterfaceName.Text);
+                ClassInfo classInfo = schemaInfo.DepandancyClasses.FirstOrDefault(x => x.NameSpaceAndInterfaceName == lblInterfaceName.Text);
                 if (classInfo == null)
                 {
                     classInfo = new ClassInfo();
@@ -161,6 +158,10 @@
 
         private void btnLastRun_Click(object sender, RoutedEventArgs e)
         {
+            if (input.LastRunFound)
+            {
+                input.CallbackLastRunOption();
+            }
         }
 
         private void BtnUseDefault_Click(object sender, RoutedEventArgs e)
@@ -266,7 +267,9 @@
                         templastIndex = tempindex + 1;
                     }
                     tempindex++;
-                    return x.FullName;
+                    string text = x.Namespace.Name + ".";
+                    return text + x.FullName.Replace(text, "").Replace('.', '+');
+
                 });
                 list.Insert(0, "");
                 cboClassName.ItemsSource = list;

@@ -38,7 +38,13 @@ namespace ConsoleApp1.Controllers
             this.method = method;
             this.commonInterface = commonInterface;
         }
-
+        public class nestedClass : IInterface
+        {
+            public void About(string dataAbout, ClassInject classInject)
+            {
+                //throw new NotImplementedException();
+            }
+        }
         public ActionResult Index(string data)
         {
             return View();
@@ -50,8 +56,8 @@ namespace ConsoleApp1.Controllers
         }
 
         public ActionResult About(string dataAbout, ClassInject classInject, Lazy<IInterface> method1,
-            int? nulldata, ICommonInterface<TTypeClass, WTypeClass> commonInterface1, 
-            List<string> data, Dictionary<string, ClassInject> classInjectDic, Dictionary<string, IInterface> classInjectDic1)
+            int? nulldata, CommonInterface<TTypeClass, WTypeClass> commonInterface1,
+            CommonInterface1 commonInterface2)
         {
             ViewBag.Message = "Your application description page.....";
             if (string.IsNullOrWhiteSpace(dataAbout))
@@ -59,13 +65,14 @@ namespace ConsoleApp1.Controllers
 
             method.Value.About(dataAbout, classInject);
             method1.Value.About(dataAbout, new ClassInject(-1));
-            commonInterface.Run(new TTypeClass());
+            //commonInterface.Run(new TTypeClass());
             commonInterface1.Run(new TTypeClass());
+            commonInterface2.Run("data");
             return View();
         }
 
         //static class, static function, private ,internal, proteced methods handle
-        public static void staticTest(ICommonInterface<TTypeClass, WTypeClass> commonInterface1)
+        public static void staticTest(CommonInterface<TTypeClass, WTypeClass> commonInterface1)
         {
             commonInterface1.Run(new TTypeClass());
         }

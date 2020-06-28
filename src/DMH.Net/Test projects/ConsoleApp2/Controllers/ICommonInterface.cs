@@ -22,7 +22,7 @@ namespace ConsoleApp2.Controllers
     {
         public string Run(string typeClass)
         {
-            Console.WriteLine("CommonInterface <T1, T2> ");
+            Console.WriteLine("CommonInterface <T1, T2> "+ typeClass);
 
             return default(string);
         }

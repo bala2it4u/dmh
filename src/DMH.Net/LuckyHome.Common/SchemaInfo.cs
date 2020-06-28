@@ -7,7 +7,7 @@ namespace LuckyHome.Common
 {
     public class SchemaInfo
     {
-        static Func<string, string, string> aggregate = (x, y) => $"{x}={y}";
+        static Func<string, string, string> aggregate = (x, y) => $"{x}={y.Substring(y.LastIndexOf('.')+1)}";
         static int maxFileLength = 255 - 100;
 
         public string NameSpaceAndClass
@@ -67,7 +67,7 @@ namespace LuckyHome.Common
             get;
             set;
         } = new InputValue[0];
-
+        public string FullMethodBasedUniqueName { get; set; }
 
         public string GetMethodBasedUniqueName()
         {

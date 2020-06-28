@@ -97,8 +97,19 @@ namespace LuckyHome
                 VsShellUtilities.ShowMessageBox(package, "we are not supporting this type functions", "Error", OLEMSGICON.OLEMSGICON_INFO, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
                 return;
             }
+            string tempSolutionDir = string.Empty;
+            try
+            {
+                tempSolutionDir = Path.GetDirectoryName(dte.Solution.FullName) + "\\.LuckyHome";
+            }
+            catch
+            {
+                VsShellUtilities.ShowMessageBox(package,
+                    "please save the Solution and then try running!", "Error", 
+                    OLEMSGICON.OLEMSGICON_INFO, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+                return;
+            }
             project = dte.ActiveDocument.ProjectItem.ContainingProject;
-            string tempSolutionDir = Path.GetDirectoryName(dte.Solution.FullName) + "\\.LuckyHome";
             if (!Directory.Exists(tempSolutionDir))
             {
                 Directory.CreateDirectory(tempSolutionDir);
@@ -149,6 +160,15 @@ namespace LuckyHome
             string text = clas.Namespace.Name + ".";
             schemaInfo.NameSpaceAndClass = text + clas.FullName.Replace(text, "").Replace('.', '+');
             schemaInfo.AssambleName = dte.ActiveDocument.ProjectItem.ContainingProject.Name;
+
+            string tempPath = Path.GetTempPath() + Path.GetFileNameWithoutExtension(project.FullName) + "\\.LuckyHome\\";
+            string methodBasedUniqueName = schemaInfo.GetMethodBasedUniqueName();
+            schemaInfo.FullMethodBasedUniqueName = tempPath + methodBasedUniqueName;
+            if (!Directory.Exists(tempPath))
+            {
+                Directory.CreateDirectory(tempPath);
+            }
+
             List<string> list = new List<string>();
             foreach (string item in dte.Solution.SolutionBuild.StartupProjects as Array)
             {
@@ -170,7 +190,7 @@ namespace LuckyHome
             ClassInfo[] array = depandancyClasses.Where((ClassInfo x) => x.NameSpaceAndInterfaceName != null && x.NameSpaceAndMappedClassName == null).ToArray();
             if (array.Length != 0)
             {
-                interfaceClassMapping(dte, array, delegate (CodeClass[] classInfos)
+                interfaceClassMapping(schemaInfo, array, delegate (CodeClass[] classInfos)
                 {
                     foreach (CodeClass codeClass in classInfos)
                     {
@@ -196,7 +216,7 @@ namespace LuckyHome
             ClassInfo[] array = depandancyClasses.Where((ClassInfo x) => x.NameSpaceAndInterfaceName != null && x.NameSpaceAndMappedClassName == null).ToArray();
             if (array.Length != 0)
             {
-                interfaceClassMapping(dte, array, delegate (CodeClass[] classInfos)
+                interfaceClassMapping(schemaInfo, array, delegate (CodeClass[] classInfos)
                 {
                     foreach (CodeClass codeClass in classInfos)
                     {
@@ -217,42 +237,54 @@ namespace LuckyHome
 
         private void callMethod(SchemaInfo schemaInfo, List<ClassInfo> depandancyClasses, List<InputValue> inputValues)
         {
+            
+            schemaInfo.DepandancyClasses = depandancyClasses;
+            schemaInfo.InputValues = inputValues.ToArray();
+            schemaInfoCommon.SetFileData(Json.Encode(schemaInfoCommon.SchemaInfo));
+
+            run(schemaInfo);
+        }
+
+        private void run(SchemaInfo schemaInfo)
+        {
             ThreadHelper.ThrowIfNotOnUIThread("callMethod");
             if (windowFrame != null && windowFrame.IsVisible() == 0)
             {
                 interfaceMapperWithClassControl.UseDefault = false;
                 ErrorHandler.ThrowOnFailure(windowFrame.Hide());
             }
-            schemaInfo.DepandancyClasses = depandancyClasses;
-            schemaInfo.InputValues = inputValues.ToArray();
-            schemaInfoCommon.SetFileData(Json.Encode(schemaInfoCommon.SchemaInfo));
-            string str = Path.Combine(Path.GetDirectoryName(project.FullName), project.ConfigurationManager.ActiveConfiguration.Properties.Item("OutputPath").Value.ToString());
-            string tempPath = Path.GetTempPath() + Path.GetFileNameWithoutExtension(project.FullName) + "\\.LuckyHome\\";
-            if (!Directory.Exists(tempPath))
+            string tempDebug = Path.Combine(Path.GetDirectoryName(project.FullName),
+                project.ConfigurationManager.ActiveConfiguration.Properties.Item("OutputPath").Value.ToString());
+
+            File.Copy("Run.Me.Now.exe", tempDebug + "Run.Me.Now.exe", overwrite: true);
+            File.Copy("LuckyHome.Common.dll", tempDebug + "LuckyHome.Common.dll", overwrite: true);
+            File.Copy("System.Web.Helpers.dll", tempDebug + "System.Web.Helpers.dll", overwrite: true);
+            if (File.Exists(tempDebug + "schemainfo.json"))
             {
-                Directory.CreateDirectory(tempPath);
+                File.Delete(tempDebug + "schemainfo.json");
             }
-            string methodBasedUniqueName = schemaInfo.GetMethodBasedUniqueName();
-            File.Copy("Run.Me.Now.exe", str + "Run.Me.Now.exe", overwrite: true);
-            File.Copy("LuckyHome.Common.dll", str + "LuckyHome.Common.dll", overwrite: true);
-            File.Copy("System.Web.Helpers.dll", str + "System.Web.Helpers.dll", overwrite: true);
-            if (File.Exists(str + "schemainfo.json"))
+
+            if (File.Exists(solutionDir + "\\luckyhome.config"))
             {
-                File.Delete(str + "schemainfo.json");
+                File.Copy(solutionDir + "\\luckyhome.config", tempDebug + "Run.Me.Now.exe.config", true);
             }
-            if (File.Exists(str + "luckyhome.config"))
+            else if (File.Exists(tempDebug + "luckyhome.config"))
             {
-                File.Copy(str + "luckyhome.config", str + "Run.Me.Now.dll.config");
+                File.Copy(tempDebug + "luckyhome.config", tempDebug + "Run.Me.Now.exe.config", true);
             }
-            else if (File.Exists(str + project.Name + ".dll.config"))
+            else if (File.Exists(tempDebug + project.Name + ".dll.config"))
             {
-                File.Copy(str + project.Name + ".dll.config", str + "Run.Me.Now.dll.config", overwrite: true);
+                File.Copy(tempDebug + project.Name + ".dll.config", tempDebug + "Run.Me.Now.exe.config", overwrite: true);
             }
-            string fileName = str + "Run.Me.Now.exe";
+            else if (File.Exists(tempDebug + project.Name + ".exe.config"))
+            {
+                File.Copy(tempDebug + project.Name + ".exe.config", tempDebug + "Run.Me.Now.exe.config", overwrite: true);
+            }
+            string fileName = tempDebug + "Run.Me.Now.exe";
             System.Diagnostics.Process process = System.Diagnostics.Process.Start(fileName);
             Attach(dte, process.Id);
-            File.WriteAllText(str + "schemainfo.json", Json.Encode(schemaInfo));
-            File.WriteAllText(tempPath + methodBasedUniqueName, Json.Encode(schemaInfo));
+            File.WriteAllText(tempDebug + "schemainfo.json", Json.Encode(schemaInfo));
+            File.WriteAllText(schemaInfo.FullMethodBasedUniqueName, Json.Encode(schemaInfo));
         }
 
         public static void Attach(DTE dte, int processid)
@@ -374,7 +406,7 @@ namespace LuckyHome
             }
         }
 
-        private void interfaceClassMapping(DTE dte, ClassInfo[] classInfos, Action<CodeClass[]> callbackOption)
+        private void interfaceClassMapping(SchemaInfo schemaInfo, ClassInfo[] classInfos, Action<CodeClass[]> callbackOption)
         {
             ThreadHelper.ThrowIfNotOnUIThread("interfaceClassMapping");
             ToolWindowPane toolWindowPane = package.FindToolWindow(typeof(InterfaceMapperWithClass), 0, create: true);
@@ -392,6 +424,7 @@ namespace LuckyHome
                 ProjectNames = ClassFinder.FindProjects(dte.Solution),
                 GetClasses = ((Project project) => ClassFinder.FindProjectClass(project)),
                 CallbackOption = callbackOption,
+                
                 SchemaInfoCommon = schemaInfoCommon,
                 Close = ()=>
                 {
@@ -401,6 +434,12 @@ namespace LuckyHome
                 ClearCache = ()=>
                 {
                     ClassFinder.ClearCache();
+                },
+                LastRunFound = File.Exists(schemaInfo.FullMethodBasedUniqueName),
+                CallbackLastRunOption = ()=>
+                {
+                    var tempSchemaInfo = Json.Decode<SchemaInfo>(File.ReadAllText(schemaInfo.FullMethodBasedUniqueName));
+                    run(tempSchemaInfo);
                 }
             });
         }
