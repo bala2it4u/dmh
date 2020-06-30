@@ -3,78 +3,18 @@
     using EnvDTE;
     using LuckyHome.Common;
     using Microsoft.VisualStudio.Shell;
-    using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Windows;
     using System.Windows.Controls;
 
-    public class InterfaceMapperWithClassControlInput
-    {
-        public ClassInfo[] ClassInfos
-        {
-            get;
-            set;
-        }
-
-        public List<Project> ProjectNames
-        {
-            get;
-            set;
-        }
-
-        public string ProjectNameSelected
-        {
-            get;
-            set;
-        }
-
-        public Func<Project, List<CodeClass>> GetClasses
-        {
-            get;
-            internal set;
-        }
-
-        public Action<CodeClass[]> CallbackOption
-        {
-            get;
-            internal set;
-        }
-
-        public Action Close
-        {
-            get;
-            internal set;
-        }
-
-        public SchemaInfoCommon SchemaInfoCommon
-        {
-            get;
-            internal set;
-        }
-
-        public Action ClearCache
-        {
-            get;
-            internal set;
-        }
-
-        public bool LastRunFound { get; internal set; }
-
-        public Action CallbackLastRunOption
-        {
-            get;
-            internal set;
-        }
-}
-
     /// <summary>
     /// Interaction logic for InterfaceMapperWithClassControl.
     /// </summary>
     public partial class InterfaceMapperWithClassControl : UserControl
     {
-        private InterfaceMapperWithClassControlInput input;
+        private IInterfaceMapperWithClassControlInput input;
         private List<CodeClass> output = new List<CodeClass>();
         int index = 0;
         private List<CodeClass> classSource = new List<CodeClass>();
@@ -86,12 +26,12 @@
             InitializeComponent();
         }
 
-        public void SetInterfaceMapperWithClassControlInput(InterfaceMapperWithClassControlInput input)
+        public void SetInterfaceMapperWithClassControlInput(IInterfaceMapperWithClassControlInput input)
         {
             this.input = input;
             output = new List<CodeClass>();
             index = 0;
-            cboProjectName.ItemsSource = input.ProjectNames.ConvertAll((Project x) => x.Name);
+            cboProjectName.ItemsSource = input.ProjectNames.ConvertAll((Project x) => { Dispatcher.VerifyAccess(); return x.Name; });
             SchemaInfo schemaInfo = input.SchemaInfoCommon.SchemaInfo;
             loadScreenData(schemaInfo);
             btnUselastrun.IsEnabled = input.LastRunFound;
@@ -108,9 +48,9 @@
                 UseDefault = false;
                 input.ClassInfos[index].AssambleName = string.Concat(cboProjectName.SelectedValue);
                 input.ClassInfos[index].NameSpaceAndMappedClassName = string.Concat(cboClassName.SelectedValue);
-                CodeClass item = classSource.Find(delegate (CodeClass x)
+                CodeClass item = classSource.Find((CodeClass x) =>
                 {
-                    base.Dispatcher.VerifyAccess();
+                    Dispatcher.VerifyAccess();
                     return x.FullName == string.Concat(cboClassName.SelectedValue);
                 });
                 output.Add(item);
@@ -215,18 +155,18 @@
         {
             int templastIndex = 0;
             int tempindex = 0;
-            int TempSelectedIndex = cboClassName.SelectedIndex;
+            int tempSelectedIndex = cboClassName.SelectedIndex;
             if (interfaceName.LastIndexOf('.') != -1)
             {
                 lblInterfaceName.Text = interfaceName;
                 interfaceName = interfaceName.Substring(interfaceName.LastIndexOf('.') + 2);
                 lblClassName.Text = interfaceName;
             }
-            classSource.Any(delegate (CodeClass x)
+            classSource.Any((CodeClass x) =>
             {
                 ThreadHelper.ThrowIfNotOnUIThread("loadInterfaceClass");
                 tempindex++;
-                if (x.Name.EndsWith(interfaceName) && TempSelectedIndex < tempindex)
+                if (x.Name.EndsWith(interfaceName) && tempSelectedIndex < tempindex)
                 {
                     templastIndex = tempindex;
                     return true;
@@ -246,7 +186,7 @@
             if (cboProjectName.SelectedValue != null)
             {
                 input.ProjectNameSelected = cboProjectName.SelectedValue.ToString();
-                Project arg = input.ProjectNames.Find(delegate (Project x)
+                Project arg = input.ProjectNames.Find((Project x) =>
                 {
                     base.Dispatcher.VerifyAccess();
                     return x.Name == input.ProjectNameSelected;
@@ -259,9 +199,9 @@
                 {
                     tempIndefaceName = tempIndefaceName.Substring(tempIndefaceName.LastIndexOf('.') + 2);
                 }
-                List<string> list = classSource.ConvertAll(delegate (CodeClass x)
+                List<string> list = classSource.ConvertAll((CodeClass x) =>
                 {
-                    ThreadHelper.ThrowIfNotOnUIThread("CboProjectName_SelectionChanged");
+                    Dispatcher.VerifyAccess();
                     if (x.Name.EndsWith(tempIndefaceName))
                     {
                         templastIndex = tempindex + 1;

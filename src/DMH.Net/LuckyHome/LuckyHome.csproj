@@ -58,11 +58,13 @@
     <Compile Include="ClassFinder.cs" />
     <Compile Include="CommandRunThisMethodContextMenu.cs" />
     <Compile Include="help.cs" />
+    <Compile Include="IInterfaceMapperWithClassControlInput.cs" />
     <Compile Include="InterfaceMapperWithClass.cs" />
     <Compile Include="InterfaceMapperWithClassCommand.cs" />
     <Compile Include="InterfaceMapperWithClassControl.xaml.cs">
       <DependentUpon>InterfaceMapperWithClassControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="InterfaceMapperWithClassControlInput.cs" />
     <Compile Include="Metadata.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="VSPackageCommandTopMenu.cs" />

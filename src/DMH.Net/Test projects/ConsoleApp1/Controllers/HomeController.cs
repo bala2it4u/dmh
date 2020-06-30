@@ -32,9 +32,9 @@ namespace ConsoleApp1.Controllers
     public class HomeController : Controller
     {
         private readonly Lazy<IInterface> method;
-        private readonly ICommonInterface<TTypeClass, WTypeClass> commonInterface;
+        private readonly ICommonInterface<IWTypeClass, IInterface> commonInterface;
 
-        public HomeController(Lazy<IInterface> method, ICommonInterface<TTypeClass, WTypeClass> commonInterface) {
+        public HomeController(Lazy<IInterface> method, ICommonInterface<IWTypeClass, IInterface> commonInterface) {
             this.method = method;
             this.commonInterface = commonInterface;
         }
@@ -65,7 +65,7 @@ namespace ConsoleApp1.Controllers
 
             method.Value.About(dataAbout, classInject);
             method1.Value.About(dataAbout, new ClassInject(-1));
-            //commonInterface.Run(new TTypeClass());
+            commonInterface.Run(new WTypeClass());
             commonInterface1.Run(new TTypeClass());
             commonInterface2.Run("data");
             return View();

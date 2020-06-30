@@ -1,6 +1,10 @@
 ﻿namespace ConsoleApp2.Controllers
 {
-    public class WTypeClass
+
+    public interface IWTypeClass
+    {
+    }
+    public class WTypeClass : IWTypeClass
     {
     }
 }

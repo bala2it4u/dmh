@@ -132,7 +132,28 @@ namespace Run.Me.Now
                 {
                     string tempTypeName = commonTypeName(paremType);
                     ClassInfo matchClass = MainSchemaInfo.DepandancyClasses.FirstOrDefault((ClassInfo x) => x.NameSpaceAndInterfaceName == tempTypeName);
-                    paremType = Assembly.Load(matchClass.AssambleName).GetType(matchClass?.NameSpaceAndMappedClassName ?? "");
+
+                    if (matchClass == null || string.IsNullOrWhiteSpace(matchClass.NameSpaceAndMappedClassName))
+                    {
+                        createdInstance.Add(null);
+                        continue;
+                    }
+                    var tempParemType = Assembly.Load(matchClass.AssambleName).GetType(matchClass.NameSpaceAndMappedClassName);
+                    if (tempParemType == null && 
+                        matchClass.NameSpaceAndMappedClassName.Contains('<') &&
+                        paremType.GetGenericArguments().Any())
+                    {
+                        var args = paremType.GetGenericArguments();
+                        var tempNameSpaceAndMappedClassName = matchClass.NameSpaceAndMappedClassName;
+                        tempNameSpaceAndMappedClassName = tempNameSpaceAndMappedClassName.Remove(tempNameSpaceAndMappedClassName.IndexOf('<')) + '`' + args.Length;
+                        paremType = Assembly.Load(matchClass.AssambleName).GetType(tempNameSpaceAndMappedClassName);
+
+                        paremType = paremType.MakeGenericType(args);
+                    }
+                    else
+                    {
+                        paremType = tempParemType;
+                    }
                 }
                 if (paremType == null)
                 {
@@ -156,7 +177,7 @@ namespace Run.Me.Now
                             createdInstance.Add(null);
                             continue;
                         }
-                        tempType = Assembly.Load(matchClass.AssambleName).GetType(matchClass?.NameSpaceAndMappedClassName ?? "");
+                        tempType = Assembly.Load(matchClass.AssambleName).GetType(matchClass.NameSpaceAndMappedClassName);
                     }
                     if (tempType == null)
                     {
@@ -180,6 +201,7 @@ namespace Run.Me.Now
                     {
                         tempCreatedInstance = createInstance(paremTypeParemType);
                     }
+
                     createdInstance.Add(Activator.CreateInstance(paremType, tempCreatedInstance));
                 }
             }

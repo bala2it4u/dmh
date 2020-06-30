@@ -161,7 +161,7 @@ namespace LuckyHome
             schemaInfo.NameSpaceAndClass = text + clas.FullName.Replace(text, "").Replace('.', '+');
             schemaInfo.AssambleName = dte.ActiveDocument.ProjectItem.ContainingProject.Name;
 
-            string tempPath = Path.GetTempPath() + Path.GetFileNameWithoutExtension(project.FullName) + "\\.LuckyHome\\";
+            string tempPath = Path.GetTempPath() + ".LuckyHome\\" + Path.GetFileNameWithoutExtension(project.FullName);
             string methodBasedUniqueName = schemaInfo.GetMethodBasedUniqueName();
             schemaInfo.FullMethodBasedUniqueName = tempPath + methodBasedUniqueName;
             if (!Directory.Exists(tempPath))
@@ -190,7 +190,7 @@ namespace LuckyHome
             ClassInfo[] array = depandancyClasses.Where((ClassInfo x) => x.NameSpaceAndInterfaceName != null && x.NameSpaceAndMappedClassName == null).ToArray();
             if (array.Length != 0)
             {
-                interfaceClassMapping(schemaInfo, array, delegate (CodeClass[] classInfos)
+                interfaceClassMapping(schemaInfo, array, (CodeClass[] classInfos) =>
                 {
                     foreach (CodeClass codeClass in classInfos)
                     {
@@ -216,7 +216,7 @@ namespace LuckyHome
             ClassInfo[] array = depandancyClasses.Where((ClassInfo x) => x.NameSpaceAndInterfaceName != null && x.NameSpaceAndMappedClassName == null).ToArray();
             if (array.Length != 0)
             {
-                interfaceClassMapping(schemaInfo, array, delegate (CodeClass[] classInfos)
+                interfaceClassMapping(schemaInfo, array, (CodeClass[] classInfos) =>
                 {
                     foreach (CodeClass codeClass in classInfos)
                     {
@@ -242,10 +242,10 @@ namespace LuckyHome
             schemaInfo.InputValues = inputValues.ToArray();
             schemaInfoCommon.SetFileData(Json.Encode(schemaInfoCommon.SchemaInfo));
 
-            run(schemaInfo);
+            fileCopyAndDebug(schemaInfo);
         }
 
-        private void run(SchemaInfo schemaInfo)
+        private void fileCopyAndDebug(SchemaInfo schemaInfo)
         {
             ThreadHelper.ThrowIfNotOnUIThread("callMethod");
             if (windowFrame != null && windowFrame.IsVisible() == 0)
@@ -439,7 +439,7 @@ namespace LuckyHome
                 CallbackLastRunOption = ()=>
                 {
                     var tempSchemaInfo = Json.Decode<SchemaInfo>(File.ReadAllText(schemaInfo.FullMethodBasedUniqueName));
-                    run(tempSchemaInfo);
+                    fileCopyAndDebug(tempSchemaInfo);
                 }
             });
         }
