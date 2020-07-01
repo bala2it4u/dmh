@@ -14,7 +14,6 @@ using LuckyHome.Common;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-using Task = System.Threading.Tasks.Task;
 
 namespace LuckyHome
 {
@@ -256,9 +255,10 @@ namespace LuckyHome
             string tempDebug = Path.Combine(Path.GetDirectoryName(project.FullName),
                 project.ConfigurationManager.ActiveConfiguration.Properties.Item("OutputPath").Value.ToString());
 
-            File.Copy("Run.Me.Now.exe", tempDebug + "Run.Me.Now.exe", overwrite: true);
-            File.Copy("LuckyHome.Common.dll", tempDebug + "LuckyHome.Common.dll", overwrite: true);
-            File.Copy("System.Web.Helpers.dll", tempDebug + "System.Web.Helpers.dll", overwrite: true);
+            var runPath = Path.GetDirectoryName(this.GetType().Assembly.Location) + "\\";
+            File.Copy(runPath + "Run.Me.Now.exe", tempDebug + "Run.Me.Now.exe", overwrite: true);
+            File.Copy(runPath + "LuckyHome.Common.dll", tempDebug + "LuckyHome.Common.dll", overwrite: true);
+            File.Copy(runPath + "System.Web.Helpers.dll", tempDebug + "System.Web.Helpers.dll", overwrite: true);
             if (File.Exists(tempDebug + "schemainfo.json"))
             {
                 File.Delete(tempDebug + "schemainfo.json");

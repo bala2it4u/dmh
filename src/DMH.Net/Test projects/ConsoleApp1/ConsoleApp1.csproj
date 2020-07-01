@@ -72,7 +72,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\VSIXProject1\Run.Me.Now\Run.Me.Now.csproj">
+    <ProjectReference Include="..\..\Run.Me.Now\Run.Me.Now.csproj">
       <Project>{9589017f-cc9e-4d65-9924-42bba869c86a}</Project>
       <Name>Run.Me.Now</Name>
     </ProjectReference>
