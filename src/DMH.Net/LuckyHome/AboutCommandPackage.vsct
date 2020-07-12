@@ -36,22 +36,22 @@
          group as the part of a menu contained between two lines. The parent of a group
          must be a menu. -->
     
-    <Menus>
+    <!--<Menus>
       <Menu guid="guidAboutCommandPackageCmdSet" id="MyTopMenu" type="Menu">
-        <!--<Parent guid="guidAboutCommandPackageCmdSet" id="MyMenuGroup" />-->
+        --><!--<Parent guid="guidAboutCommandPackageCmdSet" id="MyMenuGroup" />--><!--
         <Parent guid="guidSHLMainMenu" id="IDG_VS_MM_TOOLSADDINS" />
-        <!--<Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_TOOLS"/>-->
+        --><!--<Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_TOOLS"/>--><!--
         <Strings>
           <ButtonText>lucky Home</ButtonText>
         </Strings>
       </Menu>
-    </Menus>
+    </Menus>-->
 
     <Groups>
-      <Group guid="guidAboutCommandPackageCmdSet" id="MyMenuGroup" priority="0x0600">
-        <!--<Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_TOOLS"/>-->
+      <!--<Group guid="guidAboutCommandPackageCmdSet" id="MyMenuGroup" priority="0x0600">
+        --><!--<Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_TOOLS"/>--><!--
         <Parent guid="guidAboutCommandPackageCmdSet" id="MyTopMenu" />
-      </Group>
+      </Group>-->
       <Group guid="guidVSPackageCommandTopMenuCmdSet" id="MyMenuGroup" priority="0x0600">
         <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_CODEWIN" />
       </Group>
@@ -68,13 +68,13 @@
               <CommandFlag>DefaultInvisible</CommandFlag>
               <CommandFlag>DynamicVisibility</CommandFlag>
           If you do not want an image next to your command, remove the Icon node /> -->
-      <Button guid="guidAboutCommandPackageCmdSet" id="AboutCommandId" priority="0x0001" type="Button">
+      <!--<Button guid="guidAboutCommandPackageCmdSet" id="AboutCommandId" priority="0x0001" type="Button">
         <Parent guid="guidAboutCommandPackageCmdSet" id="MyMenuGroup" />
         <Icon guid="guidImages" id="bmpPic1" />
         <Strings>
           <ButtonText>About</ButtonText>
         </Strings>
-      </Button>
+      </Button>-->
       <Button guid="guidVSPackageCommandTopMenuCmdSet" id="cmdidCommandRunThisMethodContextMenu" priority="0x0100" type="Button">
         <Parent guid="guidVSPackageCommandTopMenuCmdSet" id="MyMenuGroup" />
         <Icon guid="guidImages1" id="bmpPic1" />
@@ -82,13 +82,13 @@
           <ButtonText>Debug Function</ButtonText>
         </Strings>
       </Button>
-      <Button guid="guidVSPackageCommandTopMenuCmdSet" id="cmdidInterfaceMapperWithClassCommand" priority="0x0100" type="Button">
+      <!--<Button guid="guidVSPackageCommandTopMenuCmdSet" id="cmdidInterfaceMapperWithClassCommand" priority="0x0100" type="Button">
         <Parent guid="guidSHLMainMenu" id="IDG_VS_WNDO_OTRWNDWS1" />
         <Icon guid="guidImages2" id="bmpPic1" />
         <Strings>
           <ButtonText>InterfaceMapperWithClass</ButtonText>
         </Strings>
-      </Button>
+      </Button>-->
     </Buttons>
 
     <!--The bitmaps section is used to define the bitmaps that are used for the commands.-->

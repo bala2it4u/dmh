@@ -9,6 +9,10 @@ namespace LuckyHome.Common
     {
         static Func<string, string, string> aggregate = (x, y) => $"{x}={y.Substring(y.LastIndexOf('.')+1)}";
         static int maxFileLength = 255 - 100;
+        /// <summary>
+        /// "luckyhome.SchemaInfo.json"
+        /// </summary>
+        public static string FileName => "luckyhome.SchemaInfo.json";
 
         public string NameSpaceAndClass
         {
@@ -53,7 +57,7 @@ namespace LuckyHome.Common
         {
             get;
             set;
-        }
+        } = new string[0];
 
         public List<ClassInfo> DepandancyClasses
         {
@@ -67,6 +71,7 @@ namespace LuckyHome.Common
             get;
             set;
         } = new InputValue[0];
+
         public string FullMethodBasedUniqueName { get; set; }
 
         public string GetMethodBasedUniqueName()
@@ -141,12 +146,14 @@ namespace LuckyHome.Common
         vsCMAccessAssemblyOrFamily = 64,
         vsCMAccessWithEvents = 128
     }
+
     public class ClassInfo
     {
         public string NameSpaceAndInterfaceName { get; set; }
         public string NameSpaceAndMappedClassName { get; set; }
         public string AssambleName { get; set; }
 
+        //public bool IsReferanceClass { get; set; }
     }
 
     public class InputValue
@@ -157,12 +164,4 @@ namespace LuckyHome.Common
 
     }
 
-    public class getClassData
-    {
-        public getClassData() { }
-
-        public void getClassDataMethod() {
-            Console.WriteLine("data");
-        }
-    }
 }

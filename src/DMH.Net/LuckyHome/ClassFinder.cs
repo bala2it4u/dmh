@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -153,6 +154,43 @@ namespace LuckyHome
         {
             CodeClassDic.Clear();
         }
+        internal static List<string> FindProjectReferance(Project project)
+        {
+            List<string> referenceNames = new List<string>();
+            var vsproject = project.Object as VSLangProj.VSProject;
+            // note: you could also try casting to VsWebSite.VSWebSite
+            foreach (VSLangProj.Reference reference in vsproject.References)
+            {
+                if (reference.SourceProject == null)
+                {
+                    var tempRefName = reference.Name;
+                    //referenceNames.Add(reference.Name);
+                    if (reference.Path == "" || tempRefName.StartsWith("Microsoft") ||
+                    tempRefName.StartsWith("Autofac") ||
+                    tempRefName.StartsWith("Newtonsoft") ||
+                    tempRefName.StartsWith("<") ||
+                    tempRefName == "MS" ||
+                    tempRefName.StartsWith("System"))
+                        continue;
+
+                    // This is an assembly reference
+                    //var fullName = GetFullName(reference);
+                   // var path = string.Format("{0}, Version ={1}.{2}.{3}.{4}, Culture ={5}, PublicKeyToken ={6}",
+                   //         reference.Path,
+                   //         reference.MajorVersion, reference.MinorVersion, reference.BuildNumber, reference.RevisionNumber,
+                   //         reference.Culture ?? "neutral",
+                   //         reference.PublicKeyToken ?? "null");
+                    var tempAssembly = Assembly.LoadFile(reference.Path);
+                    referenceNames.AddRange(
+                    tempAssembly.GetTypes().Where(x => x.IsPublic && x.IsClass).Select(x => $"{tempRefName}, {x.FullName}"));
+                }
+                else
+                {
+                    // This is a project reference
+                }
+            }
+            return referenceNames;
+        }
 
         internal static List<CodeClass> FindProjectClass(Project project)
         {
@@ -160,7 +198,7 @@ namespace LuckyHome
             var data = new List<CodeClass>();
             if (CodeClassDic.TryGetValue(project.Name, out data))
                 return data;
-
+            
             data = new List<CodeClass>();
 
             foreach (CodeElement element in project.CodeModel.CodeElements)
@@ -182,14 +220,14 @@ namespace LuckyHome
                     {
                         Debug.WriteLine(c.FullName);
                         data.Add(c);
-                        FindClassSub(c.Members, project, data);
+                        FindClassSub(c.Members, project, data, false);
                     }
                     else
                     {
                         CodeNamespace ns = element as CodeNamespace;
                         if (ns != null)
                         {
-                            FindClassSub(ns.Members, project, data);
+                            FindClassSub(ns.Members, project, data, false);
                         }
                     }
                 }
@@ -201,7 +239,7 @@ namespace LuckyHome
             return data;
         }
 
-        internal static void FindClassSub(CodeElements elements, Project main, List<CodeClass> data)
+        internal static void FindClassSub(CodeElements elements, Project main, List<CodeClass> data, bool includeReferenace)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             foreach (CodeElement element in elements)
@@ -220,17 +258,20 @@ namespace LuckyHome
                     {
                         if (false == tempName.StartsWith(main.Name))
                         {
-                            break;
+                            if (!includeReferenace)
+                            {
+                                break;
+                            }
                         }
                         data.Add(c);
-                        FindClassSub(c.Members, main, data);
+                        FindClassSub(c.Members, main, data, includeReferenace);
                     }
                     else
                     {
                         CodeNamespace ns = element as CodeNamespace;
                         if (ns != null)
                         {
-                            FindClassSub(ns.Members, main, data);
+                            FindClassSub(ns.Members, main, data, includeReferenace);
                         }
                     }
                 }

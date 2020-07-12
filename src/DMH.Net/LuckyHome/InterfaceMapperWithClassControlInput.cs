@@ -30,7 +30,11 @@
             get;
             internal set;
         }
-
+        public Func<Project, List<string>> GetRefClasses
+        {
+            get;
+            internal set;
+        }
         public Action<CodeClass[]> CallbackOption
         {
             get;

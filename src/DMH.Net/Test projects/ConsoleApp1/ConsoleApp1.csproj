@@ -32,8 +32,16 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ConsoleApp2, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\ConsoleApp2\bin\Debug\ConsoleApp2.exe</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="Run.Me.Now, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f8fcbe654fe73520, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Run.Me.Now\bin\Debug\Run.Me.Now.exe</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -70,16 +78,6 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Run.Me.Now\Run.Me.Now.csproj">
-      <Project>{9589017f-cc9e-4d65-9924-42bba869c86a}</Project>
-      <Name>Run.Me.Now</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ConsoleApp2\ConsoleApp2.csproj">
-      <Project>{8ad80fdf-5d31-4c43-a2ed-19c415fffeb0}</Project>
-      <Name>ConsoleApp2</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

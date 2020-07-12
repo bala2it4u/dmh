@@ -4,7 +4,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+namespace LuckyHome
+{
+    public class LuckyHomeInterfaceClassMapper
+    {
 
+        public object Run(Type type)
+        {
+            if (type == typeof(ICommonInterface<IWTypeClass, IInterface>))
+            {
+                return new CommonInterface<IWTypeClass, IInterface>();
+            }
+            return null;
+        }
+    }
+}
 namespace ConsoleApp1.Controllers
 {
     public enum EData {

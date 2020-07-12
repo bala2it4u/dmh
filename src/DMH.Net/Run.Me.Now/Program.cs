@@ -49,7 +49,7 @@ namespace Run.Me.Now
         {
             Console.Title = "Run Method Now";
             Console.WriteLine("starting...");
-            string schemapath = Path.Combine(AppContext.BaseDirectory, "schemaInfo.json");
+            string schemapath = Path.Combine(AppContext.BaseDirectory, SchemaInfo.FileName);
             while (!File.Exists(schemapath))
             {
                 Thread.Sleep(5000);
@@ -128,32 +128,24 @@ namespace Run.Me.Now
                     }
                     continue;
                 }
-                if (paremType.IsInterface)
+                if (paremType.IsInterface || paremType.IsAbstract)
                 {
-                    string tempTypeName = commonTypeName(paremType);
+                        string tempTypeName = commonTypeName(paremType);
                     ClassInfo matchClass = MainSchemaInfo.DepandancyClasses.FirstOrDefault((ClassInfo x) => x.NameSpaceAndInterfaceName == tempTypeName);
 
                     if (matchClass == null || string.IsNullOrWhiteSpace(matchClass.NameSpaceAndMappedClassName))
                     {
+                        createdInstance.Add(findTypeFromAssebly(paremType));
+                        continue;
+                    }
+
+                    Assembly tempAssembly = findAssebly(matchClass);
+                    if (tempAssembly == null)
+                    {
                         createdInstance.Add(null);
                         continue;
                     }
-                    var tempParemType = Assembly.Load(matchClass.AssambleName).GetType(matchClass.NameSpaceAndMappedClassName);
-                    if (tempParemType == null && 
-                        matchClass.NameSpaceAndMappedClassName.Contains('<') &&
-                        paremType.GetGenericArguments().Any())
-                    {
-                        var args = paremType.GetGenericArguments();
-                        var tempNameSpaceAndMappedClassName = matchClass.NameSpaceAndMappedClassName;
-                        tempNameSpaceAndMappedClassName = tempNameSpaceAndMappedClassName.Remove(tempNameSpaceAndMappedClassName.IndexOf('<')) + '`' + args.Length;
-                        paremType = Assembly.Load(matchClass.AssambleName).GetType(tempNameSpaceAndMappedClassName);
-
-                        paremType = paremType.MakeGenericType(args);
-                    }
-                    else
-                    {
-                        paremType = tempParemType;
-                    }
+                    paremType = GetGenericArgumentType(paremType, matchClass, tempAssembly);
                 }
                 if (paremType == null)
                 {
@@ -174,11 +166,19 @@ namespace Run.Me.Now
 
                         if (matchClass == null || string.IsNullOrWhiteSpace(matchClass.NameSpaceAndMappedClassName))
                         {
+                            createdInstance.Add(findTypeFromAssebly(paremType));
+                            //createdInstance.Add(null);
+                            continue;
+                        }
+                        var tempAssebly = findAssebly(matchClass);
+                        if (tempAssebly == null)
+                        {
                             createdInstance.Add(null);
                             continue;
                         }
-                        tempType = Assembly.Load(matchClass.AssambleName).GetType(matchClass.NameSpaceAndMappedClassName);
+                        tempType = GetGenericArgumentType(tempType, matchClass, tempAssebly);
                     }
+
                     if (tempType == null)
                     {
                         createdInstance.Add(null);
@@ -207,23 +207,73 @@ namespace Run.Me.Now
             }
             return createdInstance.ToArray();
         }
-        static Type GetType(Assembly assembly, string typeName, string interfaceParam)
+
+        private static Type GetGenericArgumentType(Type paremType, ClassInfo matchClass, Assembly tempAssembly)
         {
-            Type type = assembly.GetType(typeName);
-            if (type == null)
+            var tempParemType = tempAssembly.GetType(matchClass.NameSpaceAndMappedClassName);
+            if (tempParemType != null)
+                return tempParemType;
+
+            if (matchClass.NameSpaceAndMappedClassName.Contains('<') &&
+                                    paremType.GetGenericArguments().Any())
             {
-                int index = typeName.IndexOf("`");
-                if (index != -1)
+                var args = paremType.GetGenericArguments();
+                var tempNameSpaceAndMappedClassName = matchClass.NameSpaceAndMappedClassName;
+                tempNameSpaceAndMappedClassName = tempNameSpaceAndMappedClassName.Remove(tempNameSpaceAndMappedClassName.IndexOf('<')) + '`' + args.Length;
+                paremType = tempAssembly.GetType(tempNameSpaceAndMappedClassName);
+
+                return paremType.MakeGenericType(args);
+            }
+
+            return null;
+        }
+
+        private static Assembly findAssebly(ClassInfo matchClass)
+        {
+            var tempAssbly = Assembly.Load(matchClass.AssambleName);
+            if (tempAssbly != null)
+                return tempAssbly;
+
+            foreach (var item in MainSchemaInfo.StartAppProject.Select(x=> Path.GetDirectoryName(x)))
+            {
+                var tempPath = Path.Combine(item, matchClass.AssambleName);
+                if (File.Exists(tempPath + ".dll"))
                 {
-                    index += 2;
-                    //var span = typeName.ToList();
-                    type = Type.GetType(typeName.Remove(index));
-                    var paremTypes = new List<Type>();
-                    return type.MakeGenericType(paremTypes.ToArray());
+                    tempAssbly = Assembly.LoadFile(tempPath + ".dll");
+                    if (tempAssbly != null)
+                        return tempAssbly;
+                }
+                if (File.Exists(tempPath + ".exe"))
+                {
+                    tempAssbly = Assembly.LoadFile(tempPath + ".exe");
+                    if (tempAssbly != null)
+                        return tempAssbly;
                 }
             }
-            return type;
+            return null;
         }
+
+        private static object findTypeFromAssebly(Type matchClass)
+        {
+
+            foreach (var item in MainSchemaInfo.StartAppProject)
+            {
+                var tempAssembly = Assembly.LoadFile(item);
+                var tempLuckyHomeInterfaceClassMapper = tempAssembly.GetType("LuckyHome.LuckyHomeInterfaceClassMapper", false, true);
+                if (tempLuckyHomeInterfaceClassMapper != null)
+                {
+                    var tempMethod = tempLuckyHomeInterfaceClassMapper.GetMethod("Run");
+                    if (tempLuckyHomeInterfaceClassMapper != null && tempMethod.GetParameters().Length == 1 &&
+                        tempMethod.GetParameters()[0].ParameterType == typeof(Type))
+                    {
+                        var tempI = Activator.CreateInstance(tempLuckyHomeInterfaceClassMapper, new object[0]);
+                        return tempMethod.Invoke(tempI, new[] { matchClass });
+                    }
+                }
+            }
+            return null;
+        }
+
         private static object getEnumValue(ParameterInfo item)
         {
             InputValue findData = MainSchemaInfo.InputValues.FirstOrDefault((InputValue x) => x.InputName == item.Name);

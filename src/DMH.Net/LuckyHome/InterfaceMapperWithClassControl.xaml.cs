@@ -96,14 +96,6 @@
             }
         }
 
-        private void btnLastRun_Click(object sender, RoutedEventArgs e)
-        {
-            if (input.LastRunFound)
-            {
-                input.CallbackLastRunOption();
-            }
-        }
-
         private void BtnUseDefault_Click(object sender, RoutedEventArgs e)
         {
             if (input == null || !input.ClassInfos.Any())
@@ -126,7 +118,8 @@
                 Project project = input.ProjectNames.Find((Project x) => x.Name == depandancyClasses.AssambleName);
                 if (depandancyClasses.NameSpaceAndMappedClassName != "")
                 {
-                    CodeClass tempClassdetail = input.GetClasses(project).FirstOrDefault((CodeClass x) => x.FullName == depandancyClasses.NameSpaceAndMappedClassName);
+                    CodeClass tempClassdetail = input.GetClasses(project).FirstOrDefault(
+                        (CodeClass x) => x.FullName == depandancyClasses.NameSpaceAndMappedClassName);
                     if (tempClassdetail == null)
                     {
                         loadInterfaceClass(tempIndefaceName);
@@ -162,13 +155,14 @@
                 interfaceName = interfaceName.Substring(interfaceName.LastIndexOf('.') + 2);
                 lblClassName.Text = interfaceName;
             }
-            classSource.Any((CodeClass x) =>
+            var tempclassSource = cboClassName.ItemsSource as List<string>;
+            tempclassSource.Any((string fullname) =>
             {
                 ThreadHelper.ThrowIfNotOnUIThread("loadInterfaceClass");
                 tempindex++;
-                if (x.Name.EndsWith(interfaceName) && tempSelectedIndex < tempindex)
+                if (fullname.EndsWith(interfaceName) && tempSelectedIndex < tempindex)
                 {
-                    templastIndex = tempindex;
+                    templastIndex = tempindex - 1;
                     return true;
                 }
                 return false;
@@ -192,6 +186,7 @@
                     return x.Name == input.ProjectNameSelected;
                 });
                 classSource = input.GetClasses(arg);
+                //var classSource1 = input.GetRefClasses(arg);
                 int tempindex = 0;
                 string tempIndefaceName = lblInterfaceName.Text;
                 int templastIndex = 0;
@@ -212,6 +207,7 @@
 
                 });
                 list.Insert(0, "");
+                //list.AddRange(classSource1);
                 cboClassName.ItemsSource = list;
                 cboClassName.SelectedIndex = templastIndex;
             }
@@ -228,5 +224,28 @@
             CboProjectName_SelectionChanged(sender, null);
         }
 
+        private void btnLastRun_Click(object sender, RoutedEventArgs e)
+        {
+            if (input.LastRunFound)
+            {
+                input.CallbackLastRunOption();
+            }
+        }
+
+        private void BtnSkip_Click(object sender, RoutedEventArgs e)
+        {
+            while (true)
+            {
+                input.ClassInfos[index].NameSpaceAndMappedClassName = "";
+                index++;
+                if (input.ClassInfos.Length <= index)
+                {
+                    index = 0;
+                    input.ClassInfos = new ClassInfo[0];
+                    input.CallbackOption(output.ToArray());
+                    break;
+                }
+            }
+        }
     }
 }

@@ -167,11 +167,25 @@ namespace LuckyHome
             {
                 Directory.CreateDirectory(tempPath);
             }
-
+            //var tempProjects = dte.Solution.Projects.Cast<Project>();
+            var tempProjects = ClassFinder.FindProjects(dte.Solution);
             List<string> list = new List<string>();
             foreach (string item in dte.Solution.SolutionBuild.StartupProjects as Array)
             {
-                list.Add(item);
+                // sorry, you'll have to OfType<Project>() on Projects (dte is my wrapper)
+                // find my Project from the build context based on its name.  Vomit.
+                var project = tempProjects.First(x => x.UniqueName.EndsWith(item));
+                // Combine the project's path (FullName == path???) with the 
+                // OutputPath of the active configuration of that project
+                var tempProperties = project.ConfigurationManager.ActiveConfiguration.Properties;
+                var dir = System.IO.Path.Combine(
+                                    Path.GetDirectoryName(project.FullName),
+                                    tempProperties.Item("OutputPath").Value.ToString(),
+                                    project.Properties.Item("OutputFilename").Value.ToString()
+                                    );
+                // and combine it with the OutputFilename to get the assembly
+                // or skip this and grab all files in the output directory
+                list.Add(dir);
             }
             schemaInfo.StartAppProject = list.ToArray();
             codeFunction = getConstructor(clas);
@@ -259,9 +273,9 @@ namespace LuckyHome
             File.Copy(runPath + "Run.Me.Now.exe", tempDebug + "Run.Me.Now.exe", overwrite: true);
             File.Copy(runPath + "LuckyHome.Common.dll", tempDebug + "LuckyHome.Common.dll", overwrite: true);
             File.Copy(runPath + "System.Web.Helpers.dll", tempDebug + "System.Web.Helpers.dll", overwrite: true);
-            if (File.Exists(tempDebug + "schemainfo.json"))
+            if (File.Exists(tempDebug + SchemaInfo.FileName))
             {
-                File.Delete(tempDebug + "schemainfo.json");
+                File.Delete(tempDebug + SchemaInfo.FileName);
             }
 
             if (File.Exists(solutionDir + "\\luckyhome.config"))
@@ -283,7 +297,7 @@ namespace LuckyHome
             string fileName = tempDebug + "Run.Me.Now.exe";
             System.Diagnostics.Process process = System.Diagnostics.Process.Start(fileName);
             Attach(dte, process.Id);
-            File.WriteAllText(tempDebug + "schemainfo.json", Json.Encode(schemaInfo));
+            File.WriteAllText(tempDebug + SchemaInfo.FileName, Json.Encode(schemaInfo));
             File.WriteAllText(schemaInfo.FullMethodBasedUniqueName, Json.Encode(schemaInfo));
         }
 
@@ -423,6 +437,7 @@ namespace LuckyHome
                 ClassInfos = classInfos,
                 ProjectNames = ClassFinder.FindProjects(dte.Solution),
                 GetClasses = ((Project project) => ClassFinder.FindProjectClass(project)),
+                GetRefClasses = ((Project project) => ClassFinder.FindProjectReferance(project)),
                 CallbackOption = callbackOption,
                 
                 SchemaInfoCommon = schemaInfoCommon,

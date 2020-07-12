@@ -21,10 +21,11 @@
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <Label Content="Interface Name" Grid.Column="0" Margin="0,18"/>
-        <TextBox x:Name="lblInterfaceName" VerticalContentAlignment="Bottom" Grid.Column="1" IsReadOnly="True" Text="Interface Name" Margin="5,5,1,5"/>
+        <TextBox x:Name="lblInterfaceName" VerticalContentAlignment="Bottom" Grid.Column="1" TextWrapping="Wrap"  Width="380"
+                 IsReadOnly="True" Text="" VerticalScrollBarVisibility="Auto" Margin="5,5,1,5"/>
         <Label Content="Class end like" Grid.Column="0" Grid.Row="1" Margin="5"/>
         <StackPanel Grid.Column="1" Margin="5" Orientation="Horizontal" Grid.Row="1">
-            <TextBox x:Name="lblClassName" VerticalContentAlignment="Bottom" IsReadOnly="True" Text="Class Name" Height="29" Width="331"/>
+            <TextBox x:Name="lblClassName" VerticalContentAlignment="Bottom" TextWrapping="Wrap"  VerticalScrollBarVisibility="Auto" Text="" Height="29" Width="331"/>
             <Button Content="Find" x:Name="btnFind" HorizontalAlignment="Right"  Margin="5,6,5,5" VerticalAlignment="Center" Width="38" Click="BtnFind_Click" />
         </StackPanel>
         <Label Content="Project Name" Grid.Column="0" Grid.Row="2" Margin="5"/>
@@ -36,11 +37,12 @@
             <ComboBox x:Name="cboClassName" Height="25" Width="320"/>
             <Button Content="Refresh" Margin="5" x:Name="btnReload" HorizontalAlignment="Right" VerticalAlignment="Center" Width="46" Click="BtnReload_Click" />
         </StackPanel>
-        <StackPanel Grid.Column="1" Margin="0,0,10,10" Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right" Grid.Row="5" Height="30" Width="340">
-            <Button Content="Cancel" x:Name="btnCancel" HorizontalAlignment="Right"  Margin="5" VerticalAlignment="Bottom" Width="75" Click="BtnCancel_Click" />
-            <Button Content="Use last run" x:Name="btnUselastrun" HorizontalAlignment="Right" Margin="5" VerticalAlignment="Bottom" Width="75" Click="btnLastRun_Click"/>
-            <Button Content="Use Default" x:Name="btnUseDefault" HorizontalAlignment="Right" Margin="5" VerticalAlignment="Bottom" Width="75" Click="BtnUseDefault_Click"/>
-            <Button Content="Next" x:Name="btnNext" HorizontalAlignment="Right"  Margin="5" VerticalAlignment="Bottom" Width="75" Click="BtnNext_Click" />
+        <StackPanel Grid.Column="1" Margin="0,0,10,10" Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right" Grid.Row="5" Height="30" Width="370">
+            <Button Content="Cancel" x:Name="btnCancel" HorizontalAlignment="Right"  Margin="5" VerticalAlignment="Bottom" Width="65" Click="BtnCancel_Click" />
+            <Button Content="Skip &amp; run" x:Name="btnSkip" HorizontalAlignment="Right" Margin="5" VerticalAlignment="Bottom" Width="65" Click="BtnSkip_Click"/>
+            <Button Content="Use last run" x:Name="btnUselastrun" HorizontalAlignment="Right" Margin="5" VerticalAlignment="Bottom" Width="65" Click="btnLastRun_Click"/>
+            <Button Content="Use Default" x:Name="btnUseDefault" HorizontalAlignment="Right" Margin="5" VerticalAlignment="Bottom" Width="65" Click="BtnUseDefault_Click"/>
+            <Button Content="Next" x:Name="btnNext" HorizontalAlignment="Right"  Margin="5" VerticalAlignment="Bottom" Width="65" Click="BtnNext_Click" />
         </StackPanel>
     </Grid>
 </UserControl>
