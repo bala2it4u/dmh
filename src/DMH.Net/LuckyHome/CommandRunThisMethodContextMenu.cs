@@ -26,6 +26,8 @@ namespace LuckyHome
         public const int CommandId = 256;
 
         public static readonly Guid CommandSet = new Guid("d9e9de0c-4922-4251-82a5-3fbb5598a182");
+        ILogger logger =
+                LogManager.GetLogger(typeof(CommandRunThisMethodContextMenu));
 
         private readonly AsyncPackage package;
 
@@ -44,7 +46,8 @@ namespace LuckyHome
         private string solutionDir;
 
         private InterfaceMapperWithClassControl interfaceMapperWithClassControl;
-
+        private InputWindowControl inputWindowControl;
+        private IVsWindowFrame windowInputFrame;
         private IVsWindowFrame windowFrame;
 
         private SchemaInfoCommon schemaInfoCommon;
@@ -68,6 +71,8 @@ namespace LuckyHome
 
         public static async System.Threading.Tasks.Task InitializeAsync(AsyncPackage package)
         {
+            LogManager.GetLogger(typeof(CommandRunThisMethodContextMenu))
+            .Info("InitializeAsync created");
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(package.DisposalToken);
             OleMenuCommandService commandService = (await package.GetServiceAsync(typeof(IMenuCommandService))) as OleMenuCommandService;
             Instance = new CommandRunThisMethodContextMenu(package, commandService);
@@ -75,6 +80,7 @@ namespace LuckyHome
 
         private async void MenuItemCallback(object sender, EventArgs e)
         {
+            logger.Info("MenuItemCallback clicked");
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             dte = (DTE)(await ServiceProvider.GetServiceAsync(typeof(DTE)));
             activeDocument = dte.ActiveDocument;
@@ -139,15 +145,18 @@ namespace LuckyHome
             int iD = cmd.ID;
             object pvaIn = null;
             shell.PostExecCommand(ref pguidCmdGroup, (uint)iD, 0u, ref pvaIn);
+            logger.Info("MenuItemCallback ended");
         }
 
         private void BuildEvents_OnBuildDone(vsBuildScope Scope, vsBuildAction Action)
         {
             ThreadHelper.ThrowIfNotOnUIThread("BuildEvents_OnBuildDone");
+            logger.Info("BuildEvents_OnBuildDone called");
             dte.Events.BuildEvents.OnBuildDone -= BuildEvents_OnBuildDone;
             if (dte.Solution.SolutionBuild.LastBuildInfo == 1)
             {
                 VsShellUtilities.ShowMessageBox(package, "Please fix build error and retry", "Error", OLEMSGICON.OLEMSGICON_INFO, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+                logger.Error("BuildEvents_OnBuildDone build failed");
                 return;
             }
             dte.Debugger.Breakpoints.Add(fun.FullName, "", selectedLine.TopLine);
@@ -178,7 +187,7 @@ namespace LuckyHome
                 // Combine the project's path (FullName == path???) with the 
                 // OutputPath of the active configuration of that project
                 var tempProperties = project.ConfigurationManager.ActiveConfiguration.Properties;
-                var dir = System.IO.Path.Combine(
+                var dir = Path.Combine(
                                     Path.GetDirectoryName(project.FullName),
                                     tempProperties.Item("OutputPath").Value.ToString(),
                                     project.Properties.Item("OutputFilename").Value.ToString()
@@ -196,10 +205,12 @@ namespace LuckyHome
                 getParamType(codeFunction, depandancyClasses, inputValues);
             }
             getInterfaceMapper(schemaInfo, depandancyClasses, inputValues);
+            logger.Info("BuildEvents_OnBuildDone ended");
         }
 
         private void getInterfaceMapper(SchemaInfo schemaInfo, List<ClassInfo> depandancyClasses, List<InputValue> inputValues)
         {
+            logger.Info("getInterfaceMapper called");
             ClassInfo[] array = depandancyClasses.Where((ClassInfo x) => x.NameSpaceAndInterfaceName != null && x.NameSpaceAndMappedClassName == null).ToArray();
             if (array.Length != 0)
             {
@@ -226,6 +237,7 @@ namespace LuckyHome
 
         private void getMethodParamTypes(SchemaInfo schemaInfo, List<ClassInfo> depandancyClasses, List<InputValue> inputValues)
         {
+            logger.Info("getMethodParamTypes called");
             ClassInfo[] array = depandancyClasses.Where((ClassInfo x) => x.NameSpaceAndInterfaceName != null && x.NameSpaceAndMappedClassName == null).ToArray();
             if (array.Length != 0)
             {
@@ -250,24 +262,37 @@ namespace LuckyHome
 
         private void callMethod(SchemaInfo schemaInfo, List<ClassInfo> depandancyClasses, List<InputValue> inputValues)
         {
-            
+            logger.Info("callMethod called");
+
             schemaInfo.DepandancyClasses = depandancyClasses;
             schemaInfo.InputValues = inputValues.ToArray();
             schemaInfoCommon.SetFileData(Json.Encode(schemaInfoCommon.SchemaInfo));
 
-            fileCopyAndDebug(schemaInfo);
-        }
-
-        private void fileCopyAndDebug(SchemaInfo schemaInfo)
-        {
             ThreadHelper.ThrowIfNotOnUIThread("callMethod");
+            logger.Info("fileCopyAndDebug called");
             if (windowFrame != null && windowFrame.IsVisible() == 0)
             {
                 interfaceMapperWithClassControl.UseDefault = false;
                 ErrorHandler.ThrowOnFailure(windowFrame.Hide());
             }
-            string tempDebug = Path.Combine(Path.GetDirectoryName(project.FullName),
-                project.ConfigurationManager.ActiveConfiguration.Properties.Item("OutputPath").Value.ToString());
+            inputWindowShow(schemaInfo, () =>
+                {
+                    if (windowInputFrame != null && windowInputFrame.IsVisible() == 0)
+                    {
+                        //interfaceMapperWithClassControl.UseDefault = false;
+                        ErrorHandler.ThrowOnFailure(windowInputFrame.Hide());
+                    }
+                    fileCopyAndDebug(schemaInfo);
+                });
+        }
+
+        private void fileCopyAndDebug(SchemaInfo schemaInfo)
+        {
+
+            string tempDebug = Path.GetDirectoryName(schemaInfo.StartAppProject[0]) + "\\";
+            string tempProjectName = Path.GetFileNameWithoutExtension(schemaInfo.StartAppProject[0]);
+                //Path.Combine(Path.GetDirectoryName(project.FullName),
+                //project.ConfigurationManager.ActiveConfiguration.Properties.Item("OutputPath").Value.ToString());
 
             var runPath = Path.GetDirectoryName(this.GetType().Assembly.Location) + "\\";
             File.Copy(runPath + "Run.Me.Now.exe", tempDebug + "Run.Me.Now.exe", overwrite: true);
@@ -286,19 +311,20 @@ namespace LuckyHome
             {
                 File.Copy(tempDebug + "luckyhome.config", tempDebug + "Run.Me.Now.exe.config", true);
             }
-            else if (File.Exists(tempDebug + project.Name + ".dll.config"))
+            else if (File.Exists(tempDebug + tempProjectName + ".dll.config"))
             {
-                File.Copy(tempDebug + project.Name + ".dll.config", tempDebug + "Run.Me.Now.exe.config", overwrite: true);
+                File.Copy(tempDebug + tempProjectName + ".dll.config", tempDebug + "Run.Me.Now.exe.config", overwrite: true);
             }
-            else if (File.Exists(tempDebug + project.Name + ".exe.config"))
+            else if (File.Exists(tempDebug + tempProjectName + ".exe.config"))
             {
-                File.Copy(tempDebug + project.Name + ".exe.config", tempDebug + "Run.Me.Now.exe.config", overwrite: true);
+                File.Copy(tempDebug + tempProjectName + ".exe.config", tempDebug + "Run.Me.Now.exe.config", overwrite: true);
             }
             string fileName = tempDebug + "Run.Me.Now.exe";
             System.Diagnostics.Process process = System.Diagnostics.Process.Start(fileName);
             Attach(dte, process.Id);
             File.WriteAllText(tempDebug + SchemaInfo.FileName, Json.Encode(schemaInfo));
             File.WriteAllText(schemaInfo.FullMethodBasedUniqueName, Json.Encode(schemaInfo));
+
         }
 
         public static void Attach(DTE dte, int processid)
@@ -315,8 +341,10 @@ namespace LuckyHome
                     }
                 }
             }
-            catch
+            catch(Exception ex)
             {
+                LogManager.GetLogger(typeof(CommandRunThisMethodContextMenu))
+                .Error("attach failed", ex);
             }
         }
 
@@ -338,6 +366,7 @@ namespace LuckyHome
         private void getParamType(CodeFunction constructorFunction, List<ClassInfo> depandancyClasses, List<InputValue> inputValues)
         {
             ThreadHelper.ThrowIfNotOnUIThread("getParamType");
+            logger.Info("getParamType called");
             foreach (CodeParameter2 item in constructorFunction.Parameters.OfType<CodeParameter2>().ToList())
             {
                 try
@@ -349,14 +378,15 @@ namespace LuckyHome
                         inputValues.Add(new InputValue
                         {
                             InputType = (type?.FullName ?? typeof(string).FullName),
-                            InputName = item.FullName,
-                            DefaultValue = item.DefaultValue
+                            InputName = item.FullName,//$"{constructorFunction.FullName}->{item.FullName}",
+                            DefaultValue = item.DefaultValue?.Trim('"')
                         });
                         continue;
                     }
                 }
-                catch
+                catch (Exception ex)
                 {
+                    logger.Error("getParamType exception", ex);
                 }
                 if (item.Type.TypeKind != 0)
                 {
@@ -423,6 +453,7 @@ namespace LuckyHome
         private void interfaceClassMapping(SchemaInfo schemaInfo, ClassInfo[] classInfos, Action<CodeClass[]> callbackOption)
         {
             ThreadHelper.ThrowIfNotOnUIThread("interfaceClassMapping");
+            logger.Info("interfaceClassMapping called");
             ToolWindowPane toolWindowPane = package.FindToolWindow(typeof(InterfaceMapperWithClass), 0, create: true);
             if (toolWindowPane == null || toolWindowPane.Frame == null)
             {
@@ -430,7 +461,7 @@ namespace LuckyHome
             }
             interfaceMapperWithClassControl = (toolWindowPane.Content as InterfaceMapperWithClassControl);
             windowFrame = (IVsWindowFrame)toolWindowPane.Frame;
-            toolWindowPane.Caption = "Inferface Class Mapper";
+            toolWindowPane.Caption = "Interface Class Mapper";
             ErrorHandler.ThrowOnFailure(windowFrame.Show());
             interfaceMapperWithClassControl.SetInterfaceMapperWithClassControlInput(new InterfaceMapperWithClassControlInput
             {
@@ -456,6 +487,37 @@ namespace LuckyHome
                     var tempSchemaInfo = Json.Decode<SchemaInfo>(File.ReadAllText(schemaInfo.FullMethodBasedUniqueName));
                     fileCopyAndDebug(tempSchemaInfo);
                 }
+            });
+        }
+
+        private void inputWindowShow(SchemaInfo schemaInfo, Action callbackOption)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread("InputWindow");
+            logger.Info("InputWindow called");
+            ToolWindowPane toolWindowPane = package.FindToolWindow(typeof(InputWindow), 0, create: true);
+            if (toolWindowPane == null || toolWindowPane.Frame == null)
+            {
+                logger.Error("Cannot create tool Input window");
+                throw new NotSupportedException("Cannot create tool Input window");
+            }
+            inputWindowControl = (toolWindowPane.Content as InputWindowControl);
+            windowInputFrame = (IVsWindowFrame)toolWindowPane.Frame;
+            toolWindowPane.Caption = "Input Class/Method";
+            ErrorHandler.ThrowOnFailure(windowInputFrame.Show());
+            inputWindowControl.SetInterfaceMapperWithClassControlInput(new InputWindowControlInput
+            {
+                ProjectNames = ClassFinder.FindProjects(dte.Solution),
+                CallbackOption = callbackOption,
+
+                SchemaInfoCommon = schemaInfoCommon,
+                SchemaInfo = schemaInfo,
+                Close = () =>
+                {
+                    ThreadHelper.ThrowIfNotOnUIThread("interfaceClassMapping");
+                    ErrorHandler.ThrowOnFailure(windowInputFrame.Hide());
+                },
+                LastRunFound = File.Exists(schemaInfo.FullMethodBasedUniqueName) ? Json.Decode<SchemaInfo>(File.ReadAllText(schemaInfo.FullMethodBasedUniqueName)) : null,
+                
             });
         }
     }

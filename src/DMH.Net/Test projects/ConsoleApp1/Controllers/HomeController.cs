@@ -29,7 +29,7 @@ namespace ConsoleApp1.Controllers
     }
     public static class staticClassTest
     {
-        public static int staticTest(int? number, string data="summa", EData eDatauser= EData.Super)
+        public static int staticTest(int? number=100, string data = "summa", EData eDatauser= EData.Pass)
         {
             return number.GetValueOrDefault() * 10;
         }

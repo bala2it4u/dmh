@@ -20,14 +20,17 @@
         private List<CodeClass> classSource = new List<CodeClass>();
 
         public bool UseDefault;
+        ILogger logger = LogManager.GetLogger(typeof(InterfaceMapperWithClassControl));
 
         public InterfaceMapperWithClassControl()
         {
             InitializeComponent();
+            logger.Info("InterfaceMapperWithClassControl created");
         }
 
         public void SetInterfaceMapperWithClassControlInput(IInterfaceMapperWithClassControlInput input)
         {
+            logger.Info("SetInterfaceMapperWithClassControlInput created");
             this.input = input;
             output = new List<CodeClass>();
             index = 0;
@@ -43,6 +46,7 @@
 
         private void BtnNext_Click(object sender, RoutedEventArgs e)
         {
+            logger.Info("BtnNext_Click created");
             if (input != null)
             {
                 UseDefault = false;
@@ -80,6 +84,7 @@
 
         private void loadScreenData(SchemaInfo commonSchema)
         {
+            logger.Info("loadScreenData called");
             string tempIndefaceName = input.ClassInfos[index].NameSpaceAndInterfaceName;
             lblInterfaceName.Text = tempIndefaceName;
             ClassInfo classInfo = commonSchema.DepandancyClasses.FirstOrDefault((ClassInfo x) => x.NameSpaceAndInterfaceName == tempIndefaceName);
@@ -98,6 +103,7 @@
 
         private void BtnUseDefault_Click(object sender, RoutedEventArgs e)
         {
+            logger.Info("BtnUseDefault_Click clicked");
             if (input == null || !input.ClassInfos.Any())
             {
                 return;
@@ -146,6 +152,7 @@
 
         private void loadInterfaceClass(string interfaceName)
         {
+            logger.Info("loadInterfaceClass called");
             int templastIndex = 0;
             int tempindex = 0;
             int tempSelectedIndex = cboClassName.SelectedIndex;
@@ -156,27 +163,32 @@
                 lblClassName.Text = interfaceName;
             }
             var tempclassSource = cboClassName.ItemsSource as List<string>;
-            tempclassSource.Any((string fullname) =>
+            if (tempclassSource != null)
             {
-                ThreadHelper.ThrowIfNotOnUIThread("loadInterfaceClass");
-                tempindex++;
-                if (fullname.EndsWith(interfaceName) && tempSelectedIndex < tempindex)
+                tempclassSource.Any((string fullname) =>
                 {
-                    templastIndex = tempindex - 1;
-                    return true;
-                }
-                return false;
-            });
-            cboClassName.SelectedIndex = templastIndex;
+                    ThreadHelper.ThrowIfNotOnUIThread("loadInterfaceClass");
+                    tempindex++;
+                    if (fullname.EndsWith(interfaceName) && tempSelectedIndex < tempindex)
+                    {
+                        templastIndex = tempindex - 1;
+                        return true;
+                    }
+                    return false;
+                });
+                cboClassName.SelectedIndex = templastIndex;
+            }
         }
 
         private void BtnCancel_Click(object sender, RoutedEventArgs e)
         {
+            logger.Info("BtnCancel_Click clicked");
             input.Close();
         }
 
         private void CboProjectName_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            logger.Info("CboProjectName_SelectionChanged clicked");
             if (cboProjectName.SelectedValue != null)
             {
                 input.ProjectNameSelected = cboProjectName.SelectedValue.ToString();
@@ -215,17 +227,20 @@
 
         private void BtnFind_Click(object sender, RoutedEventArgs e)
         {
+            logger.Info("BtnFind_Click clicked");
             loadInterfaceClass(lblClassName.Text);
         }
 
         private void BtnReload_Click(object sender, RoutedEventArgs e)
         {
+            logger.Info("BtnReload_Click clicked");
             input.ClearCache();
             CboProjectName_SelectionChanged(sender, null);
         }
 
         private void btnLastRun_Click(object sender, RoutedEventArgs e)
         {
+            logger.Info("btnLastRun_Click clicked");
             if (input.LastRunFound)
             {
                 input.CallbackLastRunOption();
@@ -234,6 +249,7 @@
 
         private void BtnSkip_Click(object sender, RoutedEventArgs e)
         {
+            logger.Info("BtnSkip_Click clicked");
             while (true)
             {
                 input.ClassInfos[index].NameSpaceAndMappedClassName = "";

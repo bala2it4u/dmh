@@ -89,6 +89,13 @@
           <ButtonText>InterfaceMapperWithClass</ButtonText>
         </Strings>
       </Button>-->
+      <Button guid="guidVSPackageCommandTopMenuCmdSet" id="cmdidInputWindowCommand" priority="0x0100" type="Button">
+        <Parent guid="guidSHLMainMenu" id="IDG_VS_WNDO_OTRWNDWS1" />
+        <Icon guid="guidImages3" id="bmpPic1" />
+        <Strings>
+          <ButtonText>InputWindow</ButtonText>
+        </Strings>
+      </Button>
     </Buttons>
 
     <!--The bitmaps section is used to define the bitmaps that are used for the commands.-->
@@ -101,6 +108,7 @@
       <Bitmap guid="guidImages" href="Resources\AboutCommand.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough" />
       <Bitmap guid="guidImages1" href="Resources\CommandRunThisMethodContextMenu.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough" />
       <Bitmap guid="guidImages2" href="Resources\InterfaceMapperWithClassCommand.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough" />
+      <Bitmap guid="guidImages3" href="Resources\InputWindowCommand.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough" />
     </Bitmaps>
   </Commands>
 
@@ -129,6 +137,7 @@
       <IDSymbol value="4128" name="MyMenuGroup" />
       <IDSymbol value="256" name="cmdidCommandRunThisMethodContextMenu" />
       <IDSymbol value="4129" name="cmdidInterfaceMapperWithClassCommand" />
+      <IDSymbol value="4130" name="cmdidInputWindowCommand" />
     </GuidSymbol>
   
     <GuidSymbol value="{8f306005-160f-463c-8d99-c07258aa1201}" name="guidImages1">
@@ -141,6 +150,15 @@
     </GuidSymbol>
   
     <GuidSymbol value="{9249e933-0e4d-4228-834c-347ac40280e2}" name="guidImages2">
+      <IDSymbol name="bmpPic1" value="1" />
+      <IDSymbol name="bmpPic2" value="2" />
+      <IDSymbol name="bmpPicSearch" value="3" />
+      <IDSymbol name="bmpPicX" value="4" />
+      <IDSymbol name="bmpPicArrows" value="5" />
+      <IDSymbol name="bmpPicStrikethrough" value="6" />
+    </GuidSymbol>
+  
+    <GuidSymbol value="{bbb577f5-9550-42e2-b176-3f6ac87409b3}" name="guidImages3">
       <IDSymbol name="bmpPic1" value="1" />
       <IDSymbol name="bmpPic2" value="2" />
       <IDSymbol name="bmpPicSearch" value="3" />

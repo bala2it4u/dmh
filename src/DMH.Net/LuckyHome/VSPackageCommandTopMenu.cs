@@ -14,6 +14,7 @@ namespace LuckyHome
     [Guid(VSPackageCommandTopMenu.CommandSet)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [ProvideToolWindow(typeof(InterfaceMapperWithClass))]
+    [ProvideToolWindow(typeof(InputWindow))]
     public sealed class VSPackageCommandTopMenu : AsyncPackage
     {
         public const string CommandSet = "cd803dc7-0b76-4fb6-b92e-6415591b66b8";
@@ -28,6 +29,8 @@ namespace LuckyHome
             await AboutCommand.InitializeAsync(this);
             await CommandRunThisMethodContextMenu.InitializeAsync(this);
             await InterfaceMapperWithClassCommand.InitializeAsync(this);
+            await InputWindowCommand.InitializeAsync(this);
+            //log4net.Config.XmlConfigurator.Configure();
             //Command2.Initialize(this);
         }
     }

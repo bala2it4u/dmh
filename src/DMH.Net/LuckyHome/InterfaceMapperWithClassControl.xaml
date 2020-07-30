@@ -41,7 +41,7 @@
             <Button Content="Cancel" x:Name="btnCancel" HorizontalAlignment="Right"  Margin="5" VerticalAlignment="Bottom" Width="65" Click="BtnCancel_Click" />
             <Button Content="Skip &amp; run" x:Name="btnSkip" HorizontalAlignment="Right" Margin="5" VerticalAlignment="Bottom" Width="65" Click="BtnSkip_Click"/>
             <Button Content="Use last run" x:Name="btnUselastrun" HorizontalAlignment="Right" Margin="5" VerticalAlignment="Bottom" Width="65" Click="btnLastRun_Click"/>
-            <Button Content="Use Default" x:Name="btnUseDefault" HorizontalAlignment="Right" Margin="5" VerticalAlignment="Bottom" Width="65" Click="BtnUseDefault_Click"/>
+            <Button Content="Use default" x:Name="btnUseDefault" HorizontalAlignment="Right" Margin="5" VerticalAlignment="Bottom" Width="65" Click="BtnUseDefault_Click"/>
             <Button Content="Next" x:Name="btnNext" HorizontalAlignment="Right"  Margin="5" VerticalAlignment="Bottom" Width="65" Click="BtnNext_Click" />
         </StackPanel>
     </Grid>
