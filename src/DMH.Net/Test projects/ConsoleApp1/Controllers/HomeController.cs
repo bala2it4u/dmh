@@ -4,21 +4,127 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Autofac;
+using System.IO;
+
 namespace LuckyHome
 {
-    public class LuckyHomeInterfaceClassMapper
+    public class sample
     {
 
-        public object Run(Type type)
+        public void Run()
         {
-            if (type == typeof(ICommonInterface<IWTypeClass, IInterface>))
+            var dirs = Directory.GetDirectories(@"D:\moto g4 plus baclkup\Videos");
+            foreach (var dir in dirs)
             {
-                return new CommonInterface<IWTypeClass, IInterface>();
+               var files = Directory.GetFiles(dir);
+                foreach (var file in files)
+                {
+                    string date = "";
+                    var datetime = DateTime.Now;
+                    DateTime creationTime = File.GetCreationTime(file);
+                        var tempFile = Path.GetFileNameWithoutExtension(file);
+                    try
+                    {
+                        // Read oritinal file creation time  
+                        int index = tempFile.IndexOf("20");
+                        date = tempFile.Substring(index, 4 + 4);
+                        datetime = new DateTime(int.Parse(date.Remove(4)), int.Parse(date.Substring(4, 2)), int.Parse(date.Substring(6)), 0, 0, 0);
+                    }
+                    catch
+                    {
+                        continue;
+                    }
+                    // Display creation time  
+                    Console.WriteLine(creationTime.ToString("MM/dd/yyyy HH:mm:ss"));
+                    // Manually override previous creation time to now  
+                    File.SetCreationTime(file, datetime);
+                    Console.WriteLine(File.GetCreationTime(file).ToString("MM/dd/yyyy HH:mm:ss"));
+                }
             }
-            return null;
+
+            //if (type == typeof(ICommonInterface<IWTypeClass, IInterface>))
+            //{
+            //    return new CommonInterface<IWTypeClass, IInterface>();
+            //}
+            //return null;
+        }
+
+        public void runAlbum()
+        {
+            var dir = @"D:\moto g4 plus baclkup\Songs";
+            var files = Directory.GetFiles(dir);
+            foreach (var file in files)
+            {
+
+                byte[] b = new byte[128];
+                string sTitle;
+                string sSinger;
+                string sAlbum;
+                string sYear;
+                string sComm;
+
+                using (FileStream fs = new FileStream(file, FileMode.Open))
+                {
+                    fs.Seek(-128, SeekOrigin.End);
+                    fs.Read(b, 0, 128);
+                }
+                bool isSet = false;
+                String sFlag = System.Text.Encoding.Default.GetString(b, 0, 3);
+                if (sFlag.CompareTo("TAG") == 0)
+                {
+                    System.Console.WriteLine("Tag   is   setted! ");
+                    isSet = true;
+                }
+
+                if (isSet)
+                {
+                    sAlbum = System.Text.Encoding.Default.GetString(b, 63, 30);
+                    System.Console.WriteLine("Album: " + sAlbum);
+                    Path.GetInvalidFileNameChars().All(x => { sAlbum = sAlbum.Replace(x.ToString(), ""); return true; });
+                    if (string.IsNullOrWhiteSpace(sAlbum))
+                    {
+                        continue;
+                    }
+                    var tempDir = Path.Combine(dir, sAlbum);
+                    if (!Directory.Exists(tempDir))
+                    {
+                        Directory.CreateDirectory(tempDir);
+                    }
+                    File.Move(file, Path.Combine(tempDir, Path.GetFileName(file)));
+                }
+            }
+            System.Console.WriteLine("Any   key   to   exit! ");
+            System.Console.Read();
         }
     }
 }
+
+namespace LuckyHome
+{
+    public class LuckyHomeInterfaceClassMapper1
+    {
+        private readonly static ILifetimeScope scope;
+
+        static LuckyHomeInterfaceClassMapper1()
+        {
+            //scope = AutofacConfig.Register().BeginLifetimeScope();
+            //HttpConfiguration config = new HttpConfiguration();
+            //scope = AutofacConfigFE.Register(config, false).BeginLifetimeScope();
+        }
+
+        public object Run(Type type)
+        {
+            var output = scope.Resolve(type);
+            if (output == null)
+            {
+            }
+            return output;
+
+        }
+    }
+}
+
 namespace ConsoleApp1.Controllers
 {
     public enum EData {
@@ -29,7 +135,7 @@ namespace ConsoleApp1.Controllers
     }
     public static class staticClassTest
     {
-        public static int staticTest(int? number=100, string data = "summa", EData eDatauser= EData.Pass)
+        public static int staticTest(DateTime now, int? number=100, string data = "summa", EData eDatauser= EData.Pass)
         {
             return number.GetValueOrDefault() * 10;
         }
@@ -82,7 +188,7 @@ namespace ConsoleApp1.Controllers
             commonInterface.Run(new WTypeClass());
             commonInterface1.Run(new TTypeClass());
             commonInterface2.Run("data");
-            return View();
+            return View(dataAbout);
         }
 
         //static class, static function, private ,internal, proteced methods handle

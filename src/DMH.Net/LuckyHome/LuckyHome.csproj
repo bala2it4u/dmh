@@ -93,7 +93,14 @@
       <ResourceName>Menus1.ctmenu</ResourceName>
       <SubType>Designer</SubType>
     </VSCTCompile>
-    <Content Include="index.html" />
+    <Content Include="equal.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="index.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="Resources\AboutCommand.png" />
     <Content Include="Resources\AboutCommandPackage.ico" />
     <Content Include="Resources\CommandRunThisMethodContextMenu.png" />

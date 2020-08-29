@@ -7,7 +7,7 @@
              Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}"
              Foreground="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"
              mc:Ignorable="d"
-             d:DesignHeight="468.722" d:DesignWidth="616.917"
+             MinHeight="468" MinWidth="616" d:DesignHeight="468" d:DesignWidth="616"
              Name="MyToolWindow">
     <StackPanel Margin="10" Orientation="Vertical">
         <Grid Height="449">
@@ -18,7 +18,7 @@
                 <RowDefinition Height="39*"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="113*"/>
+                <ColumnDefinition Width="110"/>
                 <ColumnDefinition Width="484*"/>
             </Grid.ColumnDefinitions>
             <StackPanel Orientation="Vertical" Margin="10" Grid.Row="0" Grid.Column="1">

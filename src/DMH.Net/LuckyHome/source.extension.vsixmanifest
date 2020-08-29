@@ -1,9 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="LuckyHome.DMH.67fc9db7-afcb-42ec-b0e9-ee1934830a57" Version="1.0" Language="en-US" Publisher="Balaji Manoharan" />
-        <DisplayName>LuckyHome.DMH</DisplayName>
-        <Description xml:space="preserve">Lucky Home</Description>
+        <Identity Id="LuckyHome.DMH.67fc9db7-afcb-42ec-b0e9-ee1934830a57" Version="1.1" Language="en-US" Publisher="Balaji Priya" />
+        <DisplayName>DMH</DisplayName>
+        <Description xml:space="preserve">Lucky Home Software Solutions
+Debug Method Helper (DMH)</Description>
+        <MoreInfo>https://marketplace.visualstudio.com/items?itemName=BalajiPriya.DebugMethodHelper</MoreInfo>
+        <GettingStartedGuide>https://marketplace.visualstudio.com/items?itemName=BalajiPriya.DebugMethodHelper</GettingStartedGuide>
+        <Icon>equal.png</Icon>
+        <Tags>Debug, Testing, Postman</Tags>
     </Metadata>
     <Installation>
         <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[14.0,17.0)" />
@@ -18,6 +23,6 @@
     </Prerequisites>
     <Assets>
         <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
-      <Asset Type="Microsoft.VisualStudio.ToolboxControl" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
-  </Assets>
+        <Asset Type="Microsoft.VisualStudio.ToolboxControl" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
+    </Assets>
 </PackageManifest>

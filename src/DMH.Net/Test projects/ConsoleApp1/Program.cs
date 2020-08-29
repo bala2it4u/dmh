@@ -7,7 +7,8 @@ namespace ConsoleApp1
 {
     class Program
     {
-        public Program(string data) { }
+        public Program(string data) {
+        }
 
         public void temp()
         {
@@ -15,6 +16,7 @@ namespace ConsoleApp1
         }
         static void Main(string[] args)
         {
+            new LuckyHome.sample().runAlbum();
             /*
                 input given : 13(2)13(2)10#
                 output array: {1,3,3,1,3,3,10}

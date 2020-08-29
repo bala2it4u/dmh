@@ -79,7 +79,7 @@
         <Parent guid="guidVSPackageCommandTopMenuCmdSet" id="MyMenuGroup" />
         <Icon guid="guidImages1" id="bmpPic1" />
         <Strings>
-          <ButtonText>Debug Function</ButtonText>
+          <ButtonText>Debug method</ButtonText>
         </Strings>
       </Button>
       <!--<Button guid="guidVSPackageCommandTopMenuCmdSet" id="cmdidInterfaceMapperWithClassCommand" priority="0x0100" type="Button">
@@ -88,14 +88,14 @@
         <Strings>
           <ButtonText>InterfaceMapperWithClass</ButtonText>
         </Strings>
-      </Button>-->
+      </Button>
       <Button guid="guidVSPackageCommandTopMenuCmdSet" id="cmdidInputWindowCommand" priority="0x0100" type="Button">
         <Parent guid="guidSHLMainMenu" id="IDG_VS_WNDO_OTRWNDWS1" />
         <Icon guid="guidImages3" id="bmpPic1" />
         <Strings>
           <ButtonText>InputWindow</ButtonText>
         </Strings>
-      </Button>
+      </Button>-->
     </Buttons>
 
     <!--The bitmaps section is used to define the bitmaps that are used for the commands.-->

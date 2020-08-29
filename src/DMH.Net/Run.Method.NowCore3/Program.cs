@@ -1,4 +1,5 @@
-using LuckyHome.Common;
+﻿using Newtonsoft.Json;
+using Run.Method.NowCore3.Common;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -6,15 +7,102 @@ using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Runtime.Loader;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Web.Helpers;
+using Microsoft.Extensions.DependencyModel;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
-namespace Run.Me.Now
+namespace Run.Method.NowCore3
 {
-    internal class Program
+    class Program
     {
+        public class AssemblyLoader : AssemblyLoadContext
+        {
+            private static List<string> dlls = new List<string>();
+
+            
+            public static Assembly CreateAssemblyLoader(string path)
+            {
+                //this.folderPath = folderPath;
+                var this1 = new AssemblyLoader();
+                var asm = this1.LoadFromAssemblyPath(path);
+
+                //var applicationAssembly = Assembly.Load(new AssemblyName(path));
+                var context = DependencyContext.Load(asm);
+
+                if (context != null)
+                {
+                    for (var i = 0; i < context.CompileLibraries.Count; i++)
+                    {
+                        var library = context.CompileLibraries[i];
+                        IEnumerable<string> referencePaths;
+                        try
+                        {
+                            referencePaths = library.ResolveReferencePaths();
+                        }
+                        catch (InvalidOperationException e)
+                        {
+                            continue;
+                        }
+
+                        //add the references
+                       dlls.AddRange(referencePaths);
+                    }
+                }
+                //dlls = this1.dlls;
+                return asm;
+            }
+
+            public AssemblyLoader()
+            {
+                
+            }
+
+            protected override Assembly Load(AssemblyName assemblyName)
+            {
+                var res = DependencyContext.Default.CompileLibraries.Where(d => d.Name.Contains(assemblyName.Name)).ToList();
+                if (res.Count > 0)
+                {
+                    return Assembly.Load(new AssemblyName(res.First().Name));
+                }
+                else
+                {
+                    var tempRunningAssbly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(x => x.FullName == assemblyName.FullName);
+                    if (tempRunningAssbly != null)
+                    {
+                        return tempRunningAssbly;
+                    }
+                    var tempName = $"{assemblyName.Name}.dll";
+                    var tempName1 = $"{assemblyName.Name}.exe";
+                    var dll = dlls.FirstOrDefault(x => x.EndsWith(tempName) || x.EndsWith(tempName1));
+                    if (dll != null && !assemblyName.Name.StartsWith("System."))
+                    {
+                        var asl = AssemblyLoader.CreateAssemblyLoader(dll);
+                        return asl;
+                    }
+                }
+                return Assembly.Load(assemblyName);
+            }
+        }
+
+        public class Logger
+        {
+            public ILogger Create(Type type)
+            {
+                var loggerFactory = LoggerFactory.Create(builder =>
+                {
+                    builder
+                        .AddConsole()
+                        .AddEventLog();
+                });
+                ILogger logger = loggerFactory.CreateLogger(type);
+                return logger;
+            }
+        }
+
         public class lazyMapper
         {
             public object Factory(Type type, ParameterInfo[] paremTypeParemType)
@@ -41,14 +129,20 @@ namespace Run.Me.Now
         };
 
         private static SchemaInfo MainSchemaInfo = null;
-
+        //private static List<string> MainAssemblyReferance = null;
         private static Assembly MainAssembly;
 
         private static readonly MethodInfo factoryMethod = typeof(lazyMapper).GetMethod("Factory");
 
         private static void Main(string[] args)
         {
-            Console.Title = "Run Method Now";
+            var temp = new ConfigurationBuilder()
+              .AddJsonFile("Run.Method.NowCore3.deps.json", optional: true)
+              //.AddUserSecrets("e3dfcccf-0cb3-423a-b302-e3e92e95c128")
+              //.AddEnvironmentVariables()
+              .Build();
+
+            //Console.Title = "Run Method Now";
             Console.WriteLine("starting...");
             string schemapath = Path.Combine(AppContext.BaseDirectory, SchemaInfo.FileName);
             while (!File.Exists(schemapath))
@@ -56,18 +150,23 @@ namespace Run.Me.Now
                 Thread.Sleep(5000);
             }
             Debug.WriteLine("starting...");
-            MainSchemaInfo = Json.Decode<SchemaInfo>(File.ReadAllText(schemapath));
-            string appPath = AppContext.BaseDirectory + MainSchemaInfo.AssambleName;
-            MainAssembly = Assembly.Load(MainSchemaInfo.AssambleName);
-            Debug.WriteLine("main assembly loaded "+MainAssembly != null);
+            MainSchemaInfo = JsonConvert.DeserializeObject<SchemaInfo>(File.ReadAllText(schemapath));
+            string appPath = AppContext.BaseDirectory + MainSchemaInfo.AssambleName + ".dll";
+
+            //var type = asm.GetType("MyClassLib.SampleClasses.Sample");
+            MainAssembly = AssemblyLoader.CreateAssemblyLoader(appPath);
+            Debug.WriteLine("main assembly loaded " + MainAssembly != null);
+            Console.WriteLine("main assembly loaded " + MainAssembly != null);
             Type typeYouWant = MainAssembly.GetType(MainSchemaInfo.NameSpaceAndClass);
-            Debug.WriteLine("main class loaded "+ typeYouWant != null);
+            Debug.WriteLine("main class loaded " + typeYouWant != null);
+            Console.WriteLine("main class loaded " + typeYouWant != null);
             ConstructorInfo[] constructor = typeYouWant.GetConstructors();
             ParameterInfo[] classTypeParem2 = (constructor.Length != 0) ? constructor[0].GetParameters() : new ParameterInfo[0];
             object[] createdInstance2 = (classTypeParem2.Length == 0) ? new object[0] : createInstance(classTypeParem2);
             object instance = (constructor.Length != 0) ? Activator.CreateInstance(typeYouWant, createdInstance2) : null;
             MethodInfo method = getMethod(typeYouWant);
-            Debug.WriteLine("main method loaded "+ method != null);
+            Debug.WriteLine("main method loaded " + method != null);
+            Console.WriteLine("main method loaded " + method != null);
             if (method == null)
             {
                 Console.WriteLine(MainSchemaInfo.MethodToRun + " method not found error");
@@ -78,20 +177,57 @@ namespace Run.Me.Now
                 classTypeParem2 = method.GetParameters();
                 createdInstance2 = ((classTypeParem2.Length == 0) ? new object[0] : createInstance(classTypeParem2));
                 var output = method.Invoke(instance, createdInstance2);
-                Debug.WriteLine("output type :"+ output);
-                if (output != null){
+                Debug.WriteLine("output type :" + output);
+                if (output != null)
+                {
                     Debug.WriteLine("output printing in json:");
-                    Debug.WriteLine(Json.Encode(output));
+                    Console.WriteLine("output printing in json:");
+                    Debug.WriteLine(JsonConvert.SerializeObject(output));
+                    Console.WriteLine(JsonConvert.SerializeObject(output));
+                    Thread.Sleep(5 * 1000);
                 }
             }
         }
+        /*
+        //get the avaialble references based on the HostingEnvironment variable
+        public static IEnumerable<string> GetReferences(string path)
+        {
+            var references = new List<string>();
+            var asl = new AssemblyLoader(Path.GetDirectoryName(path));
+            var asm = asl.LoadFromAssemblyPath(path);
+
+            //var applicationAssembly = Assembly.Load(new AssemblyName(path));
+            var context = DependencyContext.Load(asm);
+
+            if (context != null)
+            {
+                for (var i = 0; i < context.CompileLibraries.Count; i++)
+                {
+                    var library = context.CompileLibraries[i];
+                    IEnumerable<string> referencePaths;
+                    try
+                    {
+                        referencePaths = library.ResolveReferencePaths();
+                    }
+                    catch (InvalidOperationException e)
+                    {
+                        continue;
+                    }
+
+                    //add the references
+                    references.AddRange(referencePaths);
+                }
+            }
+
+            return references;
+        }*/
 
         private static MethodInfo getMethod(Type typeYouWant)
         {
-            Debug.WriteLine("getMethod "+ MainSchemaInfo.MethodToRun + " from type "+ typeYouWant);
-            IEnumerable<MethodInfo> tempMethod = from x in typeYouWant.GetMethods()
+            Debug.WriteLine("getMethod " + MainSchemaInfo.MethodToRun + " from type " + typeYouWant);
+            var tempMethod = (from x in typeYouWant.GetMethods()
                                                  where x.Name == MainSchemaInfo.MethodToRun
-                                                 select x;
+                                                 select x).ToList();
             if (tempMethod.Count() == 0)
             {
                 Debug.WriteLine("getMethod not found");
@@ -104,12 +240,12 @@ namespace Run.Me.Now
             }
             Debug.WriteLine("getMethod overloading found");
 
-            string typeParam = MainSchemaInfo.MethodParameters.Any()?
-                MainSchemaInfo.MethodParameters.Aggregate(aggregate): "";
+            string typeParam = MainSchemaInfo.MethodParameters.Any() ?
+                MainSchemaInfo.MethodParameters.Aggregate(aggregate) : "";
             return tempMethod.FirstOrDefault(delegate (MethodInfo x)
             {
                 var a = (from x1 in x.GetParameters()
-                            select commonTypeName(x1.ParameterType)
+                         select commonTypeName(x1.ParameterType)
                             ).ToList();
                 var a1 = a.Any() ? a.Aggregate(aggregate) : "";
                 return (!(a1 != typeParam)) ? true : false;
@@ -118,7 +254,7 @@ namespace Run.Me.Now
 
         private static string commonTypeName(Type type)
         {
-            Debug.WriteLine("convert to common type "+ type);
+            Debug.WriteLine("convert to common type " + type);
             return type.ToString().Replace("`1", "").Replace("`2", "")
                 .Replace('[', '<')
                 .Replace(']', '>')
@@ -146,7 +282,7 @@ namespace Run.Me.Now
                 }
                 if (paremType.IsInterface || paremType.IsAbstract)
                 {
-                        string tempTypeName = commonTypeName(paremType);
+                    string tempTypeName = commonTypeName(paremType);
                     ClassInfo matchClass = MainSchemaInfo.DepandancyClasses.FirstOrDefault((ClassInfo x) => x.NameSpaceAndInterfaceName == tempTypeName);
 
                     if (matchClass == null || string.IsNullOrWhiteSpace(matchClass.NameSpaceAndMappedClassName))
@@ -257,11 +393,17 @@ namespace Run.Me.Now
 
         private static Assembly findAssebly(ClassInfo matchClass)
         {
-            var tempAssbly = Assembly.Load(matchClass.AssambleName);
-            if (tempAssbly != null)
-                return tempAssbly;
+            var tempAssblyName = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(x => x.GetName().Name ==
+            matchClass.AssambleName); ;//MainAssemblyReferance.FirstOrDefault(x=> x.Contains(matchClass.AssambleName));
+            if (tempAssblyName != null)
+            {
+                return tempAssblyName;
+                //List<string> tempref = new List<string>();
+                //return AssemblyLoader.CreateAssemblyLoader(tempAssblyName, ref tempref);
+            }
+            Assembly tempAssbly = null;
 
-            foreach (var item in MainSchemaInfo.StartAppProject.Select(x=> Path.GetDirectoryName(x)))
+            foreach (var item in MainSchemaInfo.StartAppProject.Select(x => Path.GetDirectoryName(x)))
             {
                 var tempPath = Path.Combine(item, matchClass.AssambleName);
                 if (File.Exists(tempPath + ".dll"))
@@ -282,10 +424,11 @@ namespace Run.Me.Now
 
         private static object findTypeFromAssebly(Type matchClass)
         {
-            Debug.WriteLine("findTypeFromAssebly "+matchClass);
-            foreach (var item in MainSchemaInfo.StartAppProject)
+            Debug.WriteLine("findTypeFromAssebly " + matchClass);
+            //foreach (var item in MainSchemaInfo.StartAppProject)
             {
-                var tempAssembly = Assembly.LoadFile(item);
+                var tempAssembly = MainAssembly;// AssemblyLoader.CreateAssemblyLoader(item);
+                
                 var tempLuckyHomeInterfaceClassMapper = tempAssembly.GetType("LuckyHome.LuckyHomeInterfaceClassMapper", false, true);
                 Debug.WriteLine("LuckyHome.LuckyHomeInterfaceClassMapper found " + tempLuckyHomeInterfaceClassMapper != null);
                 if (tempLuckyHomeInterfaceClassMapper != null)
@@ -338,3 +481,5 @@ namespace Run.Me.Now
         }
     }
 }
+
+

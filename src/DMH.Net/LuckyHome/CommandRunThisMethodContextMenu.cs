@@ -87,6 +87,18 @@ namespace LuckyHome
             selectedLine = (TextSelection)dte.ActiveDocument.Selection;
             fun = (CodeFunction)selectedLine.ActivePoint.get_CodeElement(vsCMElement.vsCMElementFunction);
             clas = (CodeClass)selectedLine.ActivePoint.get_CodeElement(vsCMElement.vsCMElementClass);
+            if (clas == null)
+            {
+                VsShellUtilities.ShowMessageBox(package, "please select valid class and try, if valid please build project and try again", "Error", 
+                    OLEMSGICON.OLEMSGICON_INFO, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+                return;
+            }
+            if (fun == null)
+            {
+                VsShellUtilities.ShowMessageBox(package, "please select valid method and try", "Error", 
+                    OLEMSGICON.OLEMSGICON_INFO, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+                return;
+            }
             if (clas.Access != vsCMAccess.vsCMAccessPublic)
             {
                 VsShellUtilities.ShowMessageBox(package, "we support only public classes", "Error", OLEMSGICON.OLEMSGICON_INFO, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
