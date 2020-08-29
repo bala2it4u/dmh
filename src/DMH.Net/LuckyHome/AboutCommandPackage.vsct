@@ -105,10 +105,10 @@
             bitmap strip containing the bitmaps and then there are the numeric ids of the elements used
             inside a button definition. An important aspect of this declaration is that the element id
             must be the actual index (1-based) of the bitmap inside the bitmap strip. -->
-      <Bitmap guid="guidImages" href="Resources\AboutCommand.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough" />
+      <!--<Bitmap guid="guidImages" href="Resources\AboutCommand.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough" />-->
       <Bitmap guid="guidImages1" href="Resources\CommandRunThisMethodContextMenu.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough" />
-      <Bitmap guid="guidImages2" href="Resources\InterfaceMapperWithClassCommand.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough" />
-      <Bitmap guid="guidImages3" href="Resources\InputWindowCommand.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough" />
+      <!--<Bitmap guid="guidImages2" href="Resources\InterfaceMapperWithClassCommand.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough" />-->
+      <!--<Bitmap guid="guidImages3" href="Resources\InputWindowCommand.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough" />-->
     </Bitmaps>
   </Commands>
 
@@ -121,17 +121,17 @@
     <GuidSymbol name="guidAboutCommandPackageCmdSet" value="{17fa8593-c4f2-4e19-b824-401b94bfe003}">
       <IDSymbol name="MyTopMenu" value="0x1020" />
       <IDSymbol name="MyMenuGroup" value="0x1021" />
-      <IDSymbol name="AboutCommandId" value="0x0100" />
+      <!--<IDSymbol name="AboutCommandId" value="0x0100" />-->
     </GuidSymbol>
 
-    <GuidSymbol name="guidImages" value="{1a939cb4-dc10-405a-b02e-ffb0d4cb488b}">
+    <!--<GuidSymbol name="guidImages" value="{1a939cb4-dc10-405a-b02e-ffb0d4cb488b}">
       <IDSymbol name="bmpPic1" value="1" />
       <IDSymbol name="bmpPic2" value="2" />
       <IDSymbol name="bmpPicSearch" value="3" />
       <IDSymbol name="bmpPicX" value="4" />
       <IDSymbol name="bmpPicArrows" value="5" />
       <IDSymbol name="bmpPicStrikethrough" value="6" />
-    </GuidSymbol>
+    </GuidSymbol>-->
   
     <GuidSymbol value="{d9e9de0c-4922-4251-82a5-3fbb5598a182}" name="guidVSPackageCommandTopMenuCmdSet">
       <IDSymbol value="4128" name="MyMenuGroup" />
@@ -149,7 +149,7 @@
       <IDSymbol name="bmpPicStrikethrough" value="6" />
     </GuidSymbol>
   
-    <GuidSymbol value="{9249e933-0e4d-4228-834c-347ac40280e2}" name="guidImages2">
+    <!--<GuidSymbol value="{9249e933-0e4d-4228-834c-347ac40280e2}" name="guidImages2">
       <IDSymbol name="bmpPic1" value="1" />
       <IDSymbol name="bmpPic2" value="2" />
       <IDSymbol name="bmpPicSearch" value="3" />
@@ -165,6 +165,6 @@
       <IDSymbol name="bmpPicX" value="4" />
       <IDSymbol name="bmpPicArrows" value="5" />
       <IDSymbol name="bmpPicStrikethrough" value="6" />
-    </GuidSymbol>
+    </GuidSymbol>-->
   </Symbols>
 </CommandTable>

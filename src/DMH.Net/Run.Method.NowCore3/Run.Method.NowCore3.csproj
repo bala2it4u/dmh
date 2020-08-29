@@ -7,7 +7,7 @@
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
 		<OutputType>Exe</OutputType>
-		<OutputPath>C:\Users\Balaji Manoharan\source\repos\webcore\webcore\bin\Debug</OutputPath>
+		<OutputPath>bin\Debug\</OutputPath>
 		<RuntimeIdentifier>win10-x64</RuntimeIdentifier>
 	</PropertyGroup>
   <ItemGroup>

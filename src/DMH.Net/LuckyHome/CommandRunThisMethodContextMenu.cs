@@ -18,7 +18,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 namespace LuckyHome
 {
 
-    internal sealed class CommandRunThisMethodContextMenu
+    internal sealed partial class CommandRunThisMethodContextMenu
     {
         /// <summary>
         /// Command handler
@@ -51,6 +51,9 @@ namespace LuckyHome
         private IVsWindowFrame windowFrame;
 
         private SchemaInfoCommon schemaInfoCommon;
+        private List<Project> projects;
+
+        #region * Common
 
         public static CommandRunThisMethodContextMenu Instance
         {
@@ -77,6 +80,8 @@ namespace LuckyHome
             OleMenuCommandService commandService = (await package.GetServiceAsync(typeof(IMenuCommandService))) as OleMenuCommandService;
             Instance = new CommandRunThisMethodContextMenu(package, commandService);
         }
+
+        #endregion
 
         private async void MenuItemCallback(object sender, EventArgs e)
         {
@@ -189,13 +194,13 @@ namespace LuckyHome
                 Directory.CreateDirectory(tempPath);
             }
             //var tempProjects = dte.Solution.Projects.Cast<Project>();
-            var tempProjects = ClassFinder.FindProjects(dte.Solution);
+            projects = ClassFinder.FindProjects(dte.Solution);
             List<string> list = new List<string>();
             foreach (string item in dte.Solution.SolutionBuild.StartupProjects as Array)
             {
                 // sorry, you'll have to OfType<Project>() on Projects (dte is my wrapper)
                 // find my Project from the build context based on its name.  Vomit.
-                var project = tempProjects.First(x => x.UniqueName.EndsWith(item));
+                var project = projects.First(x => x.UniqueName.EndsWith(item));
                 // Combine the project's path (FullName == path???) with the 
                 // OutputPath of the active configuration of that project
                 var tempProperties = project.ConfigurationManager.ActiveConfiguration.Properties;
@@ -300,43 +305,22 @@ namespace LuckyHome
 
         private void fileCopyAndDebug(SchemaInfo schemaInfo)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
 
-            string tempDebug = Path.GetDirectoryName(schemaInfo.StartAppProject[0]) + "\\";
-            string tempProjectName = Path.GetFileNameWithoutExtension(schemaInfo.StartAppProject[0]);
-                //Path.Combine(Path.GetDirectoryName(project.FullName),
-                //project.ConfigurationManager.ActiveConfiguration.Properties.Item("OutputPath").Value.ToString());
+            var tempTargetFramework = project.Properties.Item("TargetFrameworkMoniker").Value + "";
 
-            var runPath = Path.GetDirectoryName(this.GetType().Assembly.Location) + "\\";
-            File.Copy(runPath + "Run.Me.Now.exe", tempDebug + "Run.Me.Now.exe", overwrite: true);
-            File.Copy(runPath + "LuckyHome.Common.dll", tempDebug + "LuckyHome.Common.dll", overwrite: true);
-            File.Copy(runPath + "System.Web.Helpers.dll", tempDebug + "System.Web.Helpers.dll", overwrite: true);
-            if (File.Exists(tempDebug + SchemaInfo.FileName))
+            if (tempTargetFramework.StartsWith(".NETCoreApp,Version=v2."))
             {
-                File.Delete(tempDebug + SchemaInfo.FileName);
+                new FileCopyAndStartDebugCore2Frame().Run(schemaInfo, solutionDir, dte);
             }
-
-            if (File.Exists(solutionDir + "\\luckyhome.config"))
+            else if (tempTargetFramework.StartsWith(".NETCoreApp,Version=v3."))
             {
-                File.Copy(solutionDir + "\\luckyhome.config", tempDebug + "Run.Me.Now.exe.config", true);
+                new FileCopyAndStartDebugCore3Frame().Run(schemaInfo, solutionDir, dte);
             }
-            else if (File.Exists(tempDebug + "luckyhome.config"))
+            else
             {
-                File.Copy(tempDebug + "luckyhome.config", tempDebug + "Run.Me.Now.exe.config", true);
+                _ = new FileCopyAndStartDebugFrameWork().Run(schemaInfo, solutionDir, dte);
             }
-            else if (File.Exists(tempDebug + tempProjectName + ".dll.config"))
-            {
-                File.Copy(tempDebug + tempProjectName + ".dll.config", tempDebug + "Run.Me.Now.exe.config", overwrite: true);
-            }
-            else if (File.Exists(tempDebug + tempProjectName + ".exe.config"))
-            {
-                File.Copy(tempDebug + tempProjectName + ".exe.config", tempDebug + "Run.Me.Now.exe.config", overwrite: true);
-            }
-            string fileName = tempDebug + "Run.Me.Now.exe";
-            System.Diagnostics.Process process = System.Diagnostics.Process.Start(fileName);
-            Attach(dte, process.Id);
-            File.WriteAllText(tempDebug + SchemaInfo.FileName, Json.Encode(schemaInfo));
-            File.WriteAllText(schemaInfo.FullMethodBasedUniqueName, Json.Encode(schemaInfo));
-
         }
 
         public static void Attach(DTE dte, int processid)

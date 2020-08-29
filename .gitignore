@@ -39,3 +39,9 @@
 /src/DMH.Net/Test projects/DotNetCore/WebApplication1/WebApplication1/obj
 /src/DMH.Net/UpgradeLog.htm
 /src/DMH.Net/.vs/LuckyHome
+/src/DMH.Net/Run.Me.Now/obj/Release
+/src/DMH.Net/Run.Method.NowCore/bin/Release/netcoreapp2.1
+/src/DMH.Net/Run.Method.NowCore3/bin
+/src/DMH.Net/Test projects/ConsoleApp1/.vs/ConsoleApp1/DesignTimeBuild
+/src/DMH.Net/Run.Method.NowCore3/Run.Method.NowCore3.csproj.user
+*.user

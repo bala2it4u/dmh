@@ -167,6 +167,8 @@ namespace ConsoleApp1.Controllers
         }
         public ActionResult Index(string data)
         {
+            method.Value.About("", null);
+            commonInterface.Run(null);
             return View();
         }
 

@@ -26,12 +26,10 @@ namespace LuckyHome
         protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
             await this.JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
-            await AboutCommand.InitializeAsync(this);
+            //await AboutCommand.InitializeAsync(this);
             await CommandRunThisMethodContextMenu.InitializeAsync(this);
-            await InterfaceMapperWithClassCommand.InitializeAsync(this);
-            await InputWindowCommand.InitializeAsync(this);
-            //log4net.Config.XmlConfigurator.Configure();
-            //Command2.Initialize(this);
+            //await InterfaceMapperWithClassCommand.InitializeAsync(this);
+            //await InputWindowCommand.InitializeAsync(this);
         }
     }
 }

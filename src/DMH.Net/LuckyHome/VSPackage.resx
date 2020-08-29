@@ -129,10 +129,10 @@
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="110" xml:space="preserve">
-    <value>AboutCommand Extension</value>
+    <value>Debug Method Helper Extension</value>
   </data>
   <data name="112" xml:space="preserve">
-    <value>AboutCommand Visual Studio Extension Detailed Info</value>
+    <value>Lucky Home Software Solutions, DMH, Debug Method Helper Visual Studio Extension</value>
   </data>
   <data name="400" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\AboutCommandPackage.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -141,7 +141,7 @@
     <value>help Extension</value>
   </data>
   <data name="1112" xml:space="preserve">
-    <value>help Visual Stuido Extension Detailed Info</value>
+    <value>help Visual Studio Extension Detailed Info</value>
   </data>
   <data name="1400" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\helpPackage.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
