@@ -1,12 +1,12 @@
 {
   "runtimeTarget": {
-    "name": ".NETCoreApp,Version=v2.1/win-x64",
+    "name": ".NETCoreApp,Version=v2.1/win10-x64",
     "signature": ""
   },
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v2.1": {},
-    ".NETCoreApp,Version=v2.1/win-x64": {
+    ".NETCoreApp,Version=v2.1/win10-x64": {
       "Run.Method.NowCore/1.0.0": {
         "dependencies": {
           "Microsoft.Extensions.Configuration": "2.1.1",

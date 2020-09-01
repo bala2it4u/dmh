@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using WebApplication1;
 
 //using Autofac;
@@ -40,6 +42,13 @@ namespace LuckyHome
             };
         }
     }
+    public class PositionOptions
+    {
+        public const string Position = "Position";
+
+        public string Title { get; set; }
+        public string Name { get; set; }
+    }
 
     public class LuckyHomeInterfaceClassMapper
     {
@@ -54,14 +63,16 @@ namespace LuckyHome
             // Simple configuration object injection (no IOptions<T>)
             IConfiguration tempIConfiguration = new ConfigurationBuilder()
               .AddJsonFile("appsettings.json", optional: true, reloadOnChange: false)
-              //.AddUserSecrets("e3dfcccf-0cb3-423a-b302-e3e92e95c128")
-              //.AddEnvironmentVariables()
+              .AddUserSecrets("e3dfcccf-0cb3-423a-b302-e3e92e95c128")
+              .AddEnvironmentVariables()
               .Build();
-
-            //services.AddSingleton(temp);
+            
             services.AddScoped<IConfiguration>(_ => tempIConfiguration);
             services.AddTransient<IframeInterface, FrameInterface>();
-
+            services.Configure<PositionOptions>(tempIConfiguration.GetSection(
+                                                    PositionOptions.Position));
+            services.AddLogging(builder => builder.AddConsole());
+            
             serviceProvider = services.BuildServiceProvider();
         }
 
@@ -87,11 +98,16 @@ namespace WebApplication1.Controllers
     {
         private readonly IframeInterface interface1;
         private readonly IConfiguration configuration;
+        private readonly IOptions<PositionOptions> positioOption;
+        private readonly ILogger<ValuesController> logger;
 
-        public ValuesController(IframeInterface interface1, IConfiguration configuration)
+        public ValuesController(IframeInterface interface1, IConfiguration configuration, IOptions<PositionOptions> positioOption,
+            ILogger<ValuesController> logger)
         {
             this.interface1 = interface1;
             this.configuration = configuration;
+            this.positioOption = positioOption;
+            this.logger = logger;
         }
 
         [NonAction]
@@ -109,14 +125,16 @@ namespace WebApplication1.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<string>> Get()
         {
+            logger.LogInformation("Getting item {Id}", -1);
             //var data = GetIConfigurationRoot();
-            return new string[] { "value1", "value2", configuration["SampleAppSettings"] };
+            return new string[] { "value1", "value2", configuration["SampleAppSettings"], positioOption.Value.Name };
         }
 
         // GET api/values/5
         [HttpGet("{id}")]
         public ActionResult<string> Get(int id)
         {
+            logger.LogInformation("Getting item {Id}", id);
             return "value";
         }
 

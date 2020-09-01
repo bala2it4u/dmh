@@ -142,18 +142,18 @@ namespace Run.Method.NowCore
 
             //var type = asm.GetType("MyClassLib.SampleClasses.Sample");
             MainAssembly = AssemblyLoader.CreateAssemblyLoader(appPath);
-            Debug.WriteLine("main assembly loaded " + MainAssembly != null);
-            Console.WriteLine("main assembly loaded " + MainAssembly != null);
+            Debug.WriteLine("main assembly loaded " + (MainAssembly != null));
+            Console.WriteLine("main assembly loaded " + (MainAssembly != null));
             Type typeYouWant = MainAssembly.GetType(MainSchemaInfo.NameSpaceAndClass);
-            Debug.WriteLine("main class loaded " + typeYouWant != null);
-            Console.WriteLine("main class loaded " + typeYouWant != null);
+            Debug.WriteLine("main class loaded " + (typeYouWant != null));
+            Console.WriteLine("main class loaded " + (typeYouWant != null));
             ConstructorInfo[] constructor = typeYouWant.GetConstructors();
             ParameterInfo[] classTypeParem2 = (constructor.Length != 0) ? constructor[0].GetParameters() : new ParameterInfo[0];
             object[] createdInstance2 = (classTypeParem2.Length == 0) ? new object[0] : createInstance(classTypeParem2);
             object instance = (constructor.Length != 0) ? Activator.CreateInstance(typeYouWant, createdInstance2) : null;
             MethodInfo method = getMethod(typeYouWant);
-            Debug.WriteLine("main method loaded " + method != null);
-            Console.WriteLine("main method loaded " + method != null);
+            Debug.WriteLine("main method loaded " + (method != null));
+            Console.WriteLine("main method loaded " + (method != null));
             if (method == null)
             {
                 Console.WriteLine(MainSchemaInfo.MethodToRun + " method not found error");
@@ -164,7 +164,6 @@ namespace Run.Method.NowCore
                 classTypeParem2 = method.GetParameters();
                 createdInstance2 = ((classTypeParem2.Length == 0) ? new object[0] : createInstance(classTypeParem2));
                 var output = method.Invoke(instance, createdInstance2);
-                Debug.WriteLine("output type :" + output);
                 if (output != null)
                 {
                     Debug.WriteLine("output printing in json:");

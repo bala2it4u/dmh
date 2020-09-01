@@ -11,8 +11,6 @@ namespace LuckyHome
         {
             string tempDebug = Path.GetDirectoryName(schemaInfo.StartAppProject[0]) + "\\";
             string tempProjectName = Path.GetFileNameWithoutExtension(schemaInfo.StartAppProject[0]);
-            //Path.Combine(Path.GetDirectoryName(project.FullName),
-            //project.ConfigurationManager.ActiveConfiguration.Properties.Item("OutputPath").Value.ToString());
 
             var runPath = Path.GetDirectoryName(this.GetType().Assembly.Location) + "\\";
             File.Copy(runPath + "Run.Me.Now.exe", tempDebug + "Run.Me.Now.exe", overwrite: true);
