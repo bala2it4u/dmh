@@ -1,28 +1,29 @@
-why should we code to test a method
+Why should we code to test a method
 
 No need for postman or any testing framework for c# development for testing.
 
-use DMH debug method helper
+use 
+# DMH debug method helper
 
-Extension for Visual Studio 2015/2017/2019
+## Extension for Visual Studio 2015/2017/2019
 
 Steps:
-
-Right-click on any method and click "debug method"
-Can resolve dependency using UI Map dependency/skip all dependency/map by code(for autofac etc),
-Set input parameter values for that method
-Startup Project config will be used by default if you want you can also use a custom config
+1. Right-click on any method and click "debug method"
+2. Resolve dependency using UI Map dependency/skip all dependency/map by code(for autofac etc),
+3. Set input parameter values for that method
+4. Startup Project config will be used by default if you want you can also use a custom config
 For custom config create new file name "luckyhome.config" in startup project output directory and add you configuration
-Start debugging in few seconds
+5. Start debugging in few seconds
+
 Not just for web services or web API it supports all frameworks written in c#.
 
-[1](/src/DMH.Net/help/image0.png)
+![](/src/DMH.Net/help/image0.png)
 
-[2](/src/DMH.Net/help/image1.png)
+![](/src/DMH.Net/help/image1.png)
 
-[3](/src/DMH.Net/help/image2.png)
+![](/src/DMH.Net/help/image2.png)
 
-(note : don't change namespace(LouckHome), class and method name for map by code )
+### (note : don't change namespace(LouckHome), class and method name for map by code )
 
 ```
 //Add this code in your startup project selected in UI
@@ -55,17 +56,17 @@ namespace LuckyHome
     }
 }
 ```
-[4](src/DMH.Net/help/image3.png)
+![](src/DMH.Net/help/image3.png)
 
-[5](src/DMH.Net/help/image4.png)
+![](src/DMH.Net/help/image4.png)
 
-[6](src/DMH.Net/help/image5.png)
+![](src/DMH.Net/help/image5.png)
 
-supported Core version are 2.1 & 3.1
+### supported Core version are 2.1 & 3.1
 
 To get Core Dependency supported please use below code.
 
-(note : don't change namespace(LouckHome), class and method name for map by code )
+### (note : don't change namespace(LouckHome), class and method name for map by code )
 
 ```
 //Add this code in your startup project selected in UI
