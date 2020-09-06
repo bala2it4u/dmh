@@ -2,8 +2,9 @@ Why should we code to test a method
 
 No need for postman or any testing framework for c# development for testing.
 
-use 
-# DMH debug method helper
+try using 
+# DMH 
+(Debug Method Helper)
 
 ## Extension for Visual Studio 2015/2017/2019
 
