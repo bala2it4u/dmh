@@ -23,13 +23,15 @@ Steps:
 5. Map your Interface by code as you do for your test project(autofac etc),
 ![](/src/DMH.Net/help/image2.png)
 
-### (note : don't change namespace(LouckHome), class and method name for map by code )
+where in Run method input type will be of interface and output object you have to resolver and send back as class.
+
+### (note : please don't change namespace(LouckHome), class and method name else auto mapping will not work)
 
 ```
 //Add this code in your startup project selected in UI
-using Autofac;
+using Autofac;//optional based on reliever you are using
 
-namespace LuckyHome
+namespace LuckyHome//do change else we cannot find
 {
     public class LuckyHomeInterfaceClassMapper
     {
@@ -39,6 +41,9 @@ namespace LuckyHome
         {
             HttpConfiguration config = new HttpConfiguration();
             scope = AutofacConfig.Register(config, false).BeginLifetimeScope();
+	          //AutofacConfig.Register class is some thing you have to create and register your dependency
+	    //In you case you can have different class name or different way of registering, you can do it that way.
+	    
             //not only autofac you can use any resolver
             //If you want you can even do mock for some type
         }
@@ -75,7 +80,7 @@ Not just for web services or web API it supports all frameworks written in c#.
 
 To get Core Dependency supported please use below code.
 
-### (note : don't change namespace(LouckHome), class and method name for map by code )
+### (note : please don't change namespace(LouckHome), class and method name else auto mapping will not work)
 
 ```
 //Add this code in your startup project selected in UI
@@ -98,9 +103,9 @@ namespace LuckyHome
               .Build();
             
             services.AddScoped<IConfiguration>(_ => tempIConfiguration);
-            services.AddTransient<IframeInterface, FrameInterface>();
-            services.Configure<PositionOptions>(tempIConfiguration.GetSection(
-                                                    PositionOptions.Position));
+            //services.AddTransient<IframeInterface, FrameInterface>(); //based on you class and interface name input will change
+            //services.Configure<PositionOptions>(tempIConfiguration.GetSection(
+            //                                        PositionOptions.Position));//based on Configuration class name input will change
             services.AddLogging(builder => builder.AddConsole());
             
             serviceProvider = services.BuildServiceProvider();
@@ -128,3 +133,5 @@ Finally edit core project csproj file to run in windows 10 by adding this code.
     <RuntimeIdentifier>win10-x64</RuntimeIdentifier>
   </PropertyGroup>
   ```
+Please share your valuable feedback, 
+Thanks in advance.
