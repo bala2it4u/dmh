@@ -11,19 +11,21 @@ why not use reflection. based on this idea only this project was built.
 
 ## Extension for Visual Studio 2015/2017/2019 & 2019 community edition 
 
+Follow all the simple steps once and you don't want to write any code after to test.
+
 Steps to follow:
 1. Download [DMH](https://marketplace.visualstudio.com/items?itemName=BalajiPriya.DebugMethodHelper) and install this extension for Visual studio 2015/2017/2019 & 2019 community edition, else open visual studio and open extensions window and search for DMH and download fist item.
 2. Restart Visual studio and open your c# project.
 3. Right-click on any method and click "debug method"
 ![](/src/DMH.Net/help/image0.png)
 
-4. Resolve dependency Interface using UI Map dependency/skip all dependency/map by code(for autofac etc.),
+4. Resolve dependency Interface using UI Map dependency/skip all dependency/map by code(using autofac etc.),
 ![](/src/DMH.Net/help/image1.png)
 
-5. Map your Interface by code as you do for your test project(autofac etc.),
+5. You can skip all dependency and Map your Interface by code, like you do for your test project,
 ![](/src/DMH.Net/help/image2.png)
 
-where in Run method input type will be of interface and output object you have to resolver and send back as class.
+If you project is big and you cannot map using UI then this way of mapping will be really helpful.
 
 ### (note : please don't change namespace(LouckHome), class and method name else auto mapping will not work)
 
@@ -47,15 +49,15 @@ namespace LuckyHome//do change else we cannot find
             //not only autofac you can use any resolver
             //If you want you can even do mock for some type
         }
-		
-        public object Run(Type type)
+	//where in Run method input type will be of interface and output object you have to resolver and send back as class.
+        public object Run(Type type/*interface*/)
         {
             var output = scope.Resolve(type);
             //If you want you can even do mock for some type
             if (output == null)
             {
             }
-            return output;
+            return output;//class
 
         }
     }
