@@ -1,27 +1,26 @@
-Why should we code to test a method
+Welcome all,
 
-No need for postman or any testing framework for c# development for testing.
+We had designed this project to help develpers like me. 
+who are spending most of there time in debuging there code.
 
-try using 
-# DMH 
-(Debug Method Helper)
+Why should we code to test a method, 
+why not use reflection. based on this idea only this project was build.
 
-## Extension for Visual Studio 2015/2017/2019
+ 
+# DMH [Debug Method Helper](https://marketplace.visualstudio.com/items?itemName=BalajiPriya.DebugMethodHelper)
+
+## Extension for Visual Studio 2015/2017/2019 & 2019 community edition 
 
 Steps:
-1. Right-click on any method and click "debug method"
-2. Resolve dependency using UI Map dependency/skip all dependency/map by code(for autofac etc),
-3. Set input parameter values for that method
-4. Startup Project config will be used by default if you want you can also use a custom config
-For custom config create new file name "luckyhome.config" in startup project output directory and add you configuration
-5. Start debugging in few seconds
-
-Not just for web services or web API it supports all frameworks written in c#.
-
+1. Download [DMH](https://marketplace.visualstudio.com/items?itemName=BalajiPriya.DebugMethodHelper) and install this extension for Visual studio 2015/2017/2019 & 2019 community edition
+2. Restart Visual studio and open your c# project.
+3. Right-click on any method and click "debug method"
 ![](/src/DMH.Net/help/image0.png)
 
+4. Resolve dependency Interface using UI Map dependency/skip all dependency/map by code(for autofac etc),
 ![](/src/DMH.Net/help/image1.png)
 
+5. Map your Interface by code as you do for your test project(autofac etc),
 ![](/src/DMH.Net/help/image2.png)
 
 ### (note : don't change namespace(LouckHome), class and method name for map by code )
@@ -57,13 +56,22 @@ namespace LuckyHome
     }
 }
 ```
+6. Set input parameter values for that method
+
 ![](src/DMH.Net/help/image3.png)
 
 ![](src/DMH.Net/help/image4.png)
 
+7. Startup Project config will be used by default if you want you can also use a custom config
+For custom config create new file name "luckyhome.config" in startup project output directory and add you configuration
+
+8. Start debugging in few seconds
+
 ![](src/DMH.Net/help/image5.png)
 
-### supported Core version are 2.1 & 3.1
+Not just for web services or web API it supports all frameworks written in c#.
+
+### we also give support for dotnet Core version 2.1 & 3.1
 
 To get Core Dependency supported please use below code.
 
