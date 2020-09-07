@@ -1,26 +1,26 @@
 Welcome all,
 
-We had designed this project to help develpers like me. 
-who are spending most of there time in debuging there code.
+We have designed this project to help developers like us. 
+who are spending most of their time in debugging the code.
 
 Why should we code to test a method, 
-why not use reflection. based on this idea only this project was build.
+why not use reflection. based on this idea only this project was built.
 
  
 # DMH [Debug Method Helper](https://marketplace.visualstudio.com/items?itemName=BalajiPriya.DebugMethodHelper)
 
 ## Extension for Visual Studio 2015/2017/2019 & 2019 community edition 
 
-Steps:
-1. Download [DMH](https://marketplace.visualstudio.com/items?itemName=BalajiPriya.DebugMethodHelper) and install this extension for Visual studio 2015/2017/2019 & 2019 community edition
+Steps to follow:
+1. Download [DMH](https://marketplace.visualstudio.com/items?itemName=BalajiPriya.DebugMethodHelper) and install this extension for Visual studio 2015/2017/2019 & 2019 community edition, else open visual studio and open extensions window and search for DMH and download fist item.
 2. Restart Visual studio and open your c# project.
 3. Right-click on any method and click "debug method"
 ![](/src/DMH.Net/help/image0.png)
 
-4. Resolve dependency Interface using UI Map dependency/skip all dependency/map by code(for autofac etc),
+4. Resolve dependency Interface using UI Map dependency/skip all dependency/map by code(for autofac etc.),
 ![](/src/DMH.Net/help/image1.png)
 
-5. Map your Interface by code as you do for your test project(autofac etc),
+5. Map your Interface by code as you do for your test project(autofac etc.),
 ![](/src/DMH.Net/help/image2.png)
 
 where in Run method input type will be of interface and output object you have to resolver and send back as class.
@@ -95,7 +95,7 @@ namespace LuckyHome
          static LuckyHomeInterfaceClassMapper()
         {
             var services = new ServiceCollection();
-            // Simple configuration object injection (no IOptions<T>)
+	    
             IConfiguration tempIConfiguration = new ConfigurationBuilder()
               .AddJsonFile("appsettings.json", optional: true, reloadOnChange: false)
               .AddUserSecrets("e3dfcccf-0cb3-423a-b302-e3e92e95c128")
@@ -104,8 +104,11 @@ namespace LuckyHome
             
             services.AddScoped<IConfiguration>(_ => tempIConfiguration);
             //services.AddTransient<IframeInterface, FrameInterface>(); //based on you class and interface name input will change
+	    
+            // Simple configuration object injection (no IOptions<T>)
             //services.Configure<PositionOptions>(tempIConfiguration.GetSection(
             //                                        PositionOptions.Position));//based on Configuration class name input will change
+	    
             services.AddLogging(builder => builder.AddConsole());
             
             serviceProvider = services.BuildServiceProvider();
