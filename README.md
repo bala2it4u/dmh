@@ -11,7 +11,7 @@ why not use reflection. based on this idea only this project was built.
 
 ## Extension for Visual Studio 2015/2017/2019 & 2019 community edition 
 
-Follow all the simple steps once and you don't want to write any code after to test.
+Follow all the simple steps once and you don't want to write any code after to test your methods.
 
 Steps to follow:
 1. Download [DMH](https://marketplace.visualstudio.com/items?itemName=BalajiPriya.DebugMethodHelper) and install this extension for Visual studio 2015/2017/2019 & 2019 community edition, else open visual studio and open extensions window and search for DMH and download fist item.
@@ -27,7 +27,7 @@ Steps to follow:
 
 If you project is big and you cannot map using UI then this way of mapping will be really helpful.
 
-### (note : please don't change namespace(LouckHome), class and method name else auto mapping will not work)
+### (note: please don't change namespace(LouckHome), class and method name else auto mapping will not work)
 
 ```
 //Add this code in your startup project selected in UI
@@ -82,7 +82,7 @@ Not just for web services or web API it supports all frameworks written in c#.
 
 To get Core Dependency supported please use below code.
 
-### (note : please don't change namespace(LouckHome), class and method name else auto mapping will not work)
+### (note: please don't change namespace(LouckHome), class and method name else auto mapping will not work)
 
 ```
 //Add this code in your startup project selected in UI
