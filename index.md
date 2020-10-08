@@ -25,7 +25,7 @@ Steps to follow:
 5. You can skip all dependency and Map your Interface by code, like you do for your test project,
 ![](/src/DMH.Net/help/image2.png)
 
-# auto mapping
+## Auto mapping
 If you project is big and you cannot map using UI then this way of mapping will be really helpful.
 
 (note: please don't change namespace(LouckHome), class and method name else auto mapping will not work)
@@ -70,7 +70,7 @@ namespace LuckyHome//do change else we cannot find
 
 ![](src/DMH.Net/help/image4.png)
 
-# app.config or web.config
+## app.config or web.config
 
 7. Startup Project config will be used by default if you want you can also use a custom config
 For custom config create new file name "luckyhome.config" in startup project output directory and add you configuration
@@ -81,13 +81,13 @@ For custom config create new file name "luckyhome.config" in startup project out
 
 Not just for web services or web API it supports all frameworks written in c#.
 
-### we also give support for dotnet Core version 2.1 & 3.1
+# Core version 2.1 & 3.1
 
 To get Core Dependency supported please use below code.
 
 (note: please don't change namespace(LouckHome), class and method name else auto mapping will not work)
 
-# Core auto mapping
+## Core auto mapping
 ```
 //Add this code in your startup project selected in UI
 namespace LuckyHome
@@ -134,7 +134,7 @@ namespace LuckyHome
     }
 }
 ```
-# core appsettings.json
+## Core appsettings.json
 appsettings.json change the property to copy to output directory
 
 Finally edit core project csproj file to run in windows 10 by adding this code.
