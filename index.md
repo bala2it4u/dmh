@@ -26,6 +26,7 @@ Steps to follow:
 ![](/src/DMH.Net/help/image2.png)
 
 ## Auto mapping
+
 If you project is big and you cannot map using UI then this way of mapping will be really helpful.
 
 (note: please don't change namespace(LouckHome), class and method name else auto mapping will not work)
