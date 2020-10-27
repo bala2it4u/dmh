@@ -2,6 +2,7 @@ using LuckyHome.Common;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
@@ -48,8 +49,14 @@ namespace Run.Me.Now
 
         private static void Main(string[] args)
         {
+
+            //Thread.CurrentThread.CurrentCulture = new CultureInfo("fr-FR");
+            //I dont want to setup a default culture for new threads which can be done by reflection or:
+            //CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo("fr-FR");
+
             Console.Title = "Run Method Now";
             Console.WriteLine("starting...");
+            //Console.WriteLine(DateTime.Now.ToString());
             string schemapath = Path.Combine(AppContext.BaseDirectory, SchemaInfo.FileName);
             while (!File.Exists(schemapath))
             {
@@ -79,14 +86,38 @@ namespace Run.Me.Now
             else
             {
                 classTypeParem2 = method.GetParameters();
+                /*LuckyHomeUp(string methodName, object[] input)*/
                 createdInstance2 = ((classTypeParem2.Length == 0) ? new object[0] : createInstance(classTypeParem2));
-                var output = method.Invoke(instance, createdInstance2);
+                var up = getLuckyHomeUp(typeYouWant);
+                if (up != null)
+                {
+                    up.Invoke(instance, new [] { (object)MainSchemaInfo.MethodToRun, createdInstance2 });
+                }
+                object output = null;
+                try
+                {
+                    output = method.Invoke(instance, createdInstance2);
+                }
+                catch (Exception ex)
+                {
+                    output = new { Message = ex.Message, StackTrace = ex.StackTrace, InnerMessage = ex.InnerException?.Message };
+                }
                 if (output != null){
                     Debug.WriteLine("output printing in json:");
                     Debug.WriteLine(Json.Encode(output));
                     Console.WriteLine(Json.Encode(output));
-                    Thread.Sleep(5 * 1000);
                 }
+                /*LuckyHomeDown(string methodName, object[] input, object output) */
+                var down = getLuckyHomeDown(typeYouWant);
+                if (down != null)
+                {
+                    var input = new List<object>();
+                    input.Add(MainSchemaInfo.MethodToRun);
+                    input.Add(createdInstance2);
+                    input.Add(output);
+                    down.Invoke(instance, input.ToArray());
+                }
+                Thread.Sleep(5 * 1000);
             }
         }
 
@@ -120,6 +151,41 @@ namespace Run.Me.Now
             });
         }
 
+        private static MethodInfo getLuckyHomeUp(Type typeYouWant)
+        {
+            Debug.WriteLine("getMethod LuckyHomeUp from type " + typeYouWant);
+            IEnumerable<MethodInfo> tempMethod = from x in typeYouWant.GetMethods()
+                                                 where x.Name == "LuckyHomeUp"
+                                                 select x;
+            if (tempMethod.Count() == 0)
+            {
+                Debug.WriteLine("LuckyHomeUp not found");
+                return null;
+            }
+            //if (tempMethod.Count() == 1)
+            {
+                Debug.WriteLine("LuckyHomeUp found");
+                return tempMethod.First();
+            }
+        }
+
+        private static MethodInfo getLuckyHomeDown(Type typeYouWant)
+        {
+            Debug.WriteLine("getMethod LuckyHomeDown from type " + typeYouWant);
+            IEnumerable<MethodInfo> tempMethod = from x in typeYouWant.GetMethods()
+                                                 where x.Name == "LuckyHomeDown"
+                                                 select x;
+            if (tempMethod.Count() == 0)
+            {
+                Debug.WriteLine("LuckyHomeDown not found");
+                return null;
+            }
+            //if (tempMethod.Count() == 1)
+            {
+                Debug.WriteLine("LuckyHomeDown found");
+                return tempMethod.First();
+            }
+        }
         private static string commonTypeName(Type type)
         {
             Debug.WriteLine("convert to common type "+ type);

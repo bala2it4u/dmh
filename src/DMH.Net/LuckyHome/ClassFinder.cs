@@ -18,8 +18,6 @@ namespace LuckyHome
             return FindClass(elements, x => x.Name == className, ref mainProject);
         }*/
 
-        static Dictionary<string, ClassStore> ClassesByName = new Dictionary<string, ClassStore>();
-        static Dictionary<string, ClassStore> ClassesByInterfaces = new Dictionary<string, ClassStore>();
 
         static Dictionary<string, List<CodeClass>> CodeClassDic = new Dictionary<string, List<CodeClass>>();
 
@@ -154,6 +152,7 @@ namespace LuckyHome
         {
             CodeClassDic.Clear();
         }
+
         internal static List<string> FindProjectReferance(Project project)
         {
             List<string> referenceNames = new List<string>();
@@ -286,4 +285,5 @@ namespace LuckyHome
         public string[] InterfaceFullName { get; set; }
         public CodeClass CodeClass { get; set; }
     }
+
 }

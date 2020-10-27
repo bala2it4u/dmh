@@ -142,7 +142,7 @@ namespace Run.Method.NowCore3
               //.AddEnvironmentVariables()
               .Build();
 
-            //Console.Title = "Run Method Now";
+            Console.Title = "Run Method Now core3.1";
             Console.WriteLine("starting...");
             string schemapath = Path.Combine(AppContext.BaseDirectory, SchemaInfo.FileName);
             while (!File.Exists(schemapath))

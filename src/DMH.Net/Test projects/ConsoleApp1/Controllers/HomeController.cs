@@ -151,13 +151,27 @@ namespace ConsoleApp1.Controllers
 
     public class HomeController : Controller
     {
-        private readonly Lazy<IInterface> method;
+        private Lazy<IInterface> method;
         private readonly ICommonInterface<IWTypeClass, IInterface> commonInterface;
 
         public HomeController(Lazy<IInterface> method, ICommonInterface<IWTypeClass, IInterface> commonInterface) {
             this.method = method;
             this.commonInterface = commonInterface;
         }
+
+        public void LuckyHomeUp(string methodName, object[] input)
+        {
+            if (methodName == "Index")
+            {
+                //this.method = new Lazy<IInterface>(()=>new nestedClass());
+                input[0] = "1234567890";
+            }
+        }
+        public void LuckyHomeDown(string methodName, object[] input, object output)
+        {
+
+        }
+
         public class nestedClass : IInterface
         {
             public void About(string dataAbout, ClassInject classInject)

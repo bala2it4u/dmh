@@ -5,9 +5,9 @@ using System.Text;
 
 namespace ConsoleApp1
 {
-    class Program
+    public class Program
     {
-        public Program(string data) {
+        public Program() {
         }
 
         public void temp()

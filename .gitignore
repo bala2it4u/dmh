@@ -46,3 +46,7 @@
 /src/DMH.Net/Run.Method.NowCore3/Run.Method.NowCore3.csproj.user
 *.user
 /src/DMH.Net/Test projects/DotNetCore/WebApplication1/WebApplication1/bin/Debug/netcoreapp2.1
+/src/DMH.Net/Test projects/DotNetCore3/webcore/.vs/webcore
+/src/DMH.Net/Test projects/DotNetCore3/webcore/webcore/bin/Debug
+/src/DMH.Net/Test projects/DotNetCore3/webcore/webcore/obj
+/src/DMH.Net/Test projects/ConsoleApp1/.vs/ConsoleApp1/v16
