@@ -1,5 +1,5 @@
-name: dmh-Debug-Method-Helper
-description: used for c# development for testing, Extension for Visual Studio 2015/2017/2019
+name: DMH Debug Method Helper
+description: Used for c# developer for testing, Extension for Visual Studio 2015/2017/2019
 author: Lucky home software solutions
 branding:
 icon: bar-chart-2
