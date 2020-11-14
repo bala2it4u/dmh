@@ -17,13 +17,13 @@ Steps to follow:
 1. Download [DMH](https://marketplace.visualstudio.com/items?itemName=BalajiPriya.DebugMethodHelper) and install this extension for Visual studio 2015/2017/2019 & 2019 community edition, else open visual studio and open extensions window and search for DMH and download fist item.
 2. Restart Visual studio and open your c# project.
 3. Right-click on any method and click "debug method"
-![](/src/DMH.Net/help/image0.png)
+![](https://github.com/bala2it4u/DMH/blob/master/src/DMH.Net/help/image0.png)
 
 4. Resolve dependency Interface using UI Map dependency/skip all dependency/map by code(using autofac etc.),
-![](/src/DMH.Net/help/image1.png)
+![](https://github.com/bala2it4u/DMH/blob/master/src/DMH.Net/help/image1.png)
 
 5. You can skip all dependency and Map your Interface by code, like you do for your test project,
-![](/src/DMH.Net/help/image2.png)
+![](https://github.com/bala2it4u/DMH/blob/master/src/DMH.Net/help/image2.png)
 
 ## Auto mapping
 
@@ -33,7 +33,7 @@ If you project is big and you cannot map using UI then this way of mapping will 
 
 ```
 //Add this code in your startup project selected in UI
-using Autofac;//optional based on reliever you are using
+using Autofac;//optional based on dependency resolver you are using
 
 namespace LuckyHome//do change else we cannot find
 {
@@ -67,9 +67,9 @@ namespace LuckyHome//do change else we cannot find
 ```
 6. Set input parameter values for that method
 
-![](src/DMH.Net/help/image3.png)
+![](https://github.com/bala2it4u/DMH/blob/master/src/DMH.Net/help/image3.png)
 
-![](src/DMH.Net/help/image4.png)
+![](https://github.com/bala2it4u/DMH/blob/master/src/DMH.Net/help/image4.png)
 
 ## app.config or web.config
 
@@ -78,7 +78,7 @@ For custom config create new file name "luckyhome.config" in startup project out
 
 8. Start debugging in few seconds
 
-![](src/DMH.Net/help/image5.png)
+![](https://github.com/bala2it4u/DMH/blob/master/src/DMH.Net/help/image5.png)
 
 Not just for web services or web API it supports all frameworks written in c#.
 
