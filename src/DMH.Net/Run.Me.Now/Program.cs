@@ -1,4 +1,5 @@
 using LuckyHome.Common;
+using Smocks;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -50,9 +51,8 @@ namespace Run.Me.Now
         private static void Main(string[] args)
         {
 
-            //Thread.CurrentThread.CurrentCulture = new CultureInfo("fr-FR");
-            //I dont want to setup a default culture for new threads which can be done by reflection or:
-            //CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo("fr-FR");
+            // Outputs "2000"
+            Console.WriteLine(DateTime.Now);
 
             Console.Title = "Run Method Now";
             Console.WriteLine("starting...");
@@ -96,13 +96,28 @@ namespace Run.Me.Now
                 object output = null;
                 try
                 {
+                    /*
+                    Thread.CurrentThread.CurrentCulture = new CultureInfo("fr-FR");
+                    //I dont want to setup a default culture for new threads which can be done by reflection or:
+                    CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo("fr-FR");
+                    var remoteTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Central European Standard Time");
+                    // var remoteTime = TimeZoneInfo.ConvertTime(now, remoteTimeZone);
+
+                    Smock.Run(context =>
+                    {
+                        context.Setup(() => DateTime.Now).Returns(() => TimeZoneInfo.ConvertTime(DateTime.UtcNow.ToLocalTime(), remoteTimeZone));
+
+                        output = method.Invoke(instance, createdInstance2);
+                    });*/
                     output = method.Invoke(instance, createdInstance2);
+
                 }
                 catch (Exception ex)
                 {
                     output = new { Message = ex.Message, StackTrace = ex.StackTrace, InnerMessage = ex.InnerException?.Message };
                 }
-                if (output != null){
+                if (output != null)
+                {
                     Debug.WriteLine("output printing in json:");
                     Debug.WriteLine(Json.Encode(output));
                     Console.WriteLine(Json.Encode(output));
@@ -119,6 +134,7 @@ namespace Run.Me.Now
                 }
                 Thread.Sleep(5 * 1000);
             }
+
         }
 
         private static MethodInfo getMethod(Type typeYouWant)

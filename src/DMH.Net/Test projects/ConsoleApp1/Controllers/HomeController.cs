@@ -183,6 +183,7 @@ namespace ConsoleApp1.Controllers
         {
             method.Value.About("", null);
             commonInterface.Run(null);
+            Console.WriteLine(DateTime.Now);
             return View();
         }
 
