@@ -1,5 +1,5 @@
 name: dmh-Debug-Method-Helper
-description: why should we code to test a method, No need for postman or any testing framework for c# development for testing, use DMH debug method helper, Extension for Visual Studio 2015/2017/2019
+description: why should we code to test a method, No testing framework for c# development for testing, Extension for Visual Studio 2015/2017/2019
 author: Lucky home software solutions
 branding:
 icon: bar-chart-2
