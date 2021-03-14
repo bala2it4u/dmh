@@ -7,7 +7,7 @@
              Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}"
              Foreground="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"
              mc:Ignorable="d"
-             Name="MyToolWindow" MinHeight="281" MinWidth="490" d:DesignWidth="490" d:DesignHeight="281">
+             Name="MyToolWindow" MinHeight="351" MinWidth="590" d:DesignWidth="490" d:DesignHeight="281">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="60"/>

@@ -8,7 +8,7 @@
     <DeployTargetInstanceId>796a0b97</DeployTargetInstanceId>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <StartProgram>C:\Program Files %28x86%29\Microsoft Visual Studio\2019\Community\Common7\IDE\devenv.exe</StartProgram>
-    <DeployTargetInstanceId>49268bf9</DeployTargetInstanceId>
+    <StartProgram>C:\Program Files %28x86%29\Microsoft Visual Studio\2017\Professional\Common7\IDE\devenv.exe</StartProgram>
+    <DeployTargetInstanceId>796a0b97</DeployTargetInstanceId>
   </PropertyGroup>
 </Project>

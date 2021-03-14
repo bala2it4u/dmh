@@ -7,6 +7,7 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <UseCodebase>true</UseCodebase>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
@@ -25,7 +26,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>LuckyHome</RootNamespace>
     <AssemblyName>LuckyHome</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <GeneratePkgDefFile>true</GeneratePkgDefFile>
     <IncludeAssemblyInVSIXContainer>true</IncludeAssemblyInVSIXContainer>
     <IncludeDebugSymbolsInVSIXContainer>true</IncludeDebugSymbolsInVSIXContainer>
@@ -55,23 +56,23 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="ClassFinder.cs" />
-    <Compile Include="CommandRunThisMethodContextMenu.cs" />
-    <Compile Include="FileCopyAndStartDebugCore3Frame.cs" />
-    <Compile Include="FileCopyAndStartDebugCore2Frame.cs" />
-    <Compile Include="FileCopyAndStartDebugFrameWork.cs" />
-    <Compile Include="IInterfaceMapperWithClassControlInput.cs" />
-    <Compile Include="InputWindow.cs" />
-    <Compile Include="InputWindowControl.xaml.cs">
+    <Compile Include="Command\CommandRunThisMethodContextMenu.cs" />
+    <Compile Include="FileCopyToDubugFolder\FileCopyAndStartDebugCore3Frame.cs" />
+    <Compile Include="FileCopyToDubugFolder\FileCopyAndStartDebugCore2Frame.cs" />
+    <Compile Include="FileCopyToDubugFolder\FileCopyAndStartDebugFrameWork.cs" />
+    <Compile Include="UI\InterfaceMapperWithClass\IInterfaceMapperWithClassControlInput.cs" />
+    <Compile Include="UI\InputWindow\InputWindow.cs" />
+    <Compile Include="UI\InputWindow\InputWindowControl.xaml.cs">
       <DependentUpon>InputWindowControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="InputWindowControlInput.cs" />
-    <Compile Include="InterfaceMapperWithClass.cs" />
-    <Compile Include="InterfaceMapperWithClassControl.xaml.cs">
+    <Compile Include="UI\InputWindow\InputWindowControlInput.cs" />
+    <Compile Include="UI\InterfaceMapperWithClass\InterfaceMapperWithClass.cs" />
+    <Compile Include="UI\InterfaceMapperWithClass\InterfaceMapperWithClassControl.xaml.cs">
       <DependentUpon>InterfaceMapperWithClassControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="InterfaceMapperWithClassControlInput.cs" />
+    <Compile Include="UI\InterfaceMapperWithClass\InterfaceMapperWithClassControlInput.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="VSPackageCommandTopMenu.cs" />
+    <Compile Include="Command\VSPackageCommandTopMenu.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -361,11 +362,11 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="InputWindowControl.xaml">
+    <Page Include="UI\InputWindow\InputWindowControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="InterfaceMapperWithClassControl.xaml">
+    <Page Include="UI\InterfaceMapperWithClass\InterfaceMapperWithClassControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

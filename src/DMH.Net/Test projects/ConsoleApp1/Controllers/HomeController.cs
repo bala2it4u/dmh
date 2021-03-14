@@ -135,7 +135,7 @@ namespace ConsoleApp1.Controllers
     }
     public static class staticClassTest
     {
-        public static int staticTest(DateTime now, int? number=100, string data = "summa", EData eDatauser= EData.Pass)
+        public static int staticTest(DateTime now, Interface interface1, int? number=100, string data = "summa", EData eDatauser= EData.Pass)
         {
             return number.GetValueOrDefault() * 10;
         }
@@ -159,27 +159,7 @@ namespace ConsoleApp1.Controllers
             this.commonInterface = commonInterface;
         }
 
-        public void LuckyHomeUp(string methodName, object[] input)
-        {
-            if (methodName == "Index")
-            {
-                //this.method = new Lazy<IInterface>(()=>new nestedClass());
-                input[0] = "1234567890";
-            }
-        }
-        public void LuckyHomeDown(string methodName, object[] input, object output)
-        {
-
-        }
-
-        public class nestedClass : IInterface
-        {
-            public void About(string dataAbout, ClassInject classInject)
-            {
-                //throw new NotImplementedException();
-            }
-        }
-        public ActionResult Index(string data)
+        public ActionResult Index(string data, DateTime date)
         {
             method.Value.About("", null);
             commonInterface.Run(null);
@@ -206,6 +186,28 @@ namespace ConsoleApp1.Controllers
             commonInterface1.Run(new TTypeClass());
             commonInterface2.Run("data");
             return View(dataAbout);
+        }
+
+
+        public void LuckyHomeUp(string methodName, object[] input)
+        {
+            if (methodName == "Index")
+            {
+                //this.method = new Lazy<IInterface>(()=>new nestedClass());
+                input[0] = "1234567890";
+            }
+        }
+        public void LuckyHomeDown(string methodName, object[] input, object output)
+        {
+
+        }
+
+        public class nestedClass : IInterface
+        {
+            public void About(string dataAbout, ClassInject classInject)
+            {
+                //throw new NotImplementedException();
+            }
         }
 
         //static class, static function, private ,internal, proteced methods handle
